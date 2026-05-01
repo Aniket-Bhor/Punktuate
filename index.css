@@ -1,0 +1,303 @@
+
+/* --- Core Styling & Resets --- */
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #000B3D;
+    color: white;
+    margin: 0;
+    overflow-x: hidden; /* Prevent horizontal scroll bars */
+    scroll-behavior: smooth; /* Smooth scrolling for anchor links */
+}
+
+/* --- Typography & Text Styles --- */
+.luxury-caption { 
+    font-family: 'Inter', sans-serif; 
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+/* Make key text lowercase by default, as requested in HTML classes */
+h1, h2, .hero-text p {
+    text-transform: lowercase;
+}
+
+/* --- Navigation --- */
+#navbar {
+    transition: all 0.7s cubic-bezier(0.23, 1, 0.32, 1); /* Smooth transitions on scroll */
+}
+
+/* Scrolled state for the navbar */
+#navbar.scrolled {
+    background: #000B3D;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 2px solid rgba(212, 175, 55, 0.5); /* Much more visible gold border */
+    padding-top: 0.8rem !important;
+    padding-bottom: 0.8rem !important;
+    box-shadow: 0 10px 40px rgba(212, 175, 55, 0.2); /* Added a subtle gold glow */
+}
+
+.nav-link {
+    transition: all 0.3s ease;
+}
+
+.active-tab { 
+    color: #D4AF37 !important; /* Gold color */
+    position: relative; 
+}
+
+/* Underline for the active tab */
+.active-tab::after { 
+    content: ''; 
+    position: absolute; 
+    bottom: -4px; 
+    left: 0; 
+    width: 100%; 
+    height: 2px; 
+    background: #D4AF37; 
+}
+
+.nav-logo { 
+    height: 45px; 
+    width: auto; 
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Playful ease-out-back */
+}
+
+.nav-logo:hover {
+    transform: scale(1.15) rotate(-3deg);
+    filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.4));
+}
+
+/* --- Page & Content structure --- */
+.page { 
+    display: none; /* Hide pages by default */
+}
+
+.page.active { 
+    display: block; /* Show the active page */
+    animation: pageTransition 0.8s cubic-bezier(0.23, 1, 0.32, 1); /* Entrance animation */
+}
+
+/* Keyframes for page entrance */
+@keyframes pageTransition {
+    from { 
+        opacity: 0; 
+        transform: translateY(30px); 
+        filter: blur(10px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+        filter: blur(0); 
+    }
+}
+
+/* --- Component Styles --- */
+
+/* Glassmorphism Effect */
+.glass {
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Button Hover Effects */
+.btn-hover {
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.btn-hover:hover {
+    transform: scale(1.05) translateY(-2px);
+    box-shadow: 0 15px 30px rgba(212, 175, 55, 0.4);
+}
+
+/* Service Cards (Home Page) */
+.hover-card {
+    transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.hover-card:hover {
+    transform: translateY(-12px) scale(1.02);
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(212, 175, 55, 0.4);
+    box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6);
+}
+/* --- Video Showcase Fade-in on Scroll --- */
+/* The base class for any element that should fade/slide in on scroll */
+.scroll-reveal {
+    opacity: 0; /* Initially invisible */
+    transform: translateY(50px); /* Positioned slightly down */
+    transition: all 1.2s cubic-bezier(0.23, 1, 0.32, 1); /* Slow and smooth easing */
+    filter: blur(10px); /* Add a slight blur initially */
+}
+
+/* The state triggered by JavaScript when the user scrolls to the element */
+.scroll-reveal.visible {
+    opacity: 1; /* Fade in */
+    transform: translateY(0); /* Move back to its final position */
+    filter: blur(0); /* Remove the blur */
+}
+
+/* --- Optional Staggered (Delayed) Fades --- */
+/* These delay classes create a staggered 'wave' effect when applied in order */
+.delay-100 { 
+    transition-delay: 0.1s; 
+}
+
+.delay-200 { 
+    transition-delay: 0.2s; 
+}
+
+.delay-300 { 
+    transition-delay: 0.3s; 
+}
+
+.delay-500 { 
+    transition-delay: 0.5s; 
+}
+
+/* --- Video Component Styling (Overrides and Additions to your existing CSS) --- */
+
+/* Ensures the video element itself behaves correctly within the container */
+.scroll-reveal video {
+    object-fit: cover; /* Video covers its entire space without stretching */
+    display: block; /* Prevents tiny whitespace at the bottom */
+}
+
+/* Optional styling to make the video title text (in the hover overlay)lowercase like your main headers */
+.video-title {
+    text-transform: lowercase;
+}
+
+/* Stat Boxes (About Page) */
+.stat-box {
+    height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 30px;
+}
+
+.stat-box:hover {
+    transform: translateY(-10px);
+    background: rgba(212, 175, 55, 0.05);
+    border-color: rgba(212, 175, 55, 0.3);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* Form Input Focus */
+.input-focus {
+    transition: all 0.3s ease;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.input-focus:focus {
+    border-bottom: 1px solid #D4AF37;
+    padding-left: 10px;
+}
+
+/* --- Influencer Card Styles --- */
+.influencer-card {
+    transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.influencer-card:hover {
+    transform: translateY(-15px) scale(1.02);
+    border-color: rgba(212, 175, 55, 0.5);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8), 0 0 30px rgba(212, 175, 55, 0.1);
+}
+
+.influencer-image-wrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4/5;
+    border-radius: 30px;
+    overflow: hidden;
+}
+
+.influencer-image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 1s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.influencer-card:hover .influencer-image-wrapper img {
+    transform: scale(1.1);
+}
+
+.instagram-btn {
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.instagram-btn:hover {
+    transform: scale(1.2);
+    background: #D4AF37;
+    color: #000B3D;
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.6);
+}
+
+
+/* --- Video Showcase (New Section) --- */
+.scroll-reveal {
+    opacity: 0;
+    transform: translateY(50px);
+    transition: all 1.2s cubic-bezier(0.23, 1, 0.32, 1); /* Slow and smooth */
+    filter: blur(10px);
+}
+
+/* State triggered by JavaScript Intersection Observer */
+.scroll-reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+}
+
+/* Ensures the video covers its container without stretching */
+.scroll-reveal video {
+    object-fit: cover;
+}
+
+/* --- Footer --- */
+
+/* Premium Social Icons Styling */
+.social-link {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.social-link:hover {
+    background: #D4AF37; /* Gold background on hover */
+    border-color: #D4AF37;
+    color: #000B3D; /* Dark blue icon on hover */
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(212, 175, 55, 0.3);
+}
+
+/* --- Scrollbar Customization --- */
+::-webkit-scrollbar { 
+    width: 6px; 
+}
+
+::-webkit-scrollbar-track { 
+    background: #000B3D; 
+}
+
+::-webkit-scrollbar-thumb { 
+    background: #D4AF37; 
+    border-radius: 10px; 
+}
