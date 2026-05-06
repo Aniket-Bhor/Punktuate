@@ -1,4 +1,8 @@
+const express = require('express');
 const Razorpay = require('razorpay');
+const dotenv = require('dotenv');
+
+dotenv.config();
 
 const RAZORPAY_TEST_KEY_ID = 'rzp_test_Sj1lOL9RKMWKFc';
 const RAZORPAY_TEST_KEY_SECRET = 'OufeeOtc5mQln02mmI4NJegz';
@@ -29,7 +33,7 @@ module.exports = async (req, res) => {
     
     try {
         if (!razorpay) {
-            throw new Error('Razorpay is not configured. Please check your environment variables.');
+            throw new Error('Razorpay is not configured. Please check your .env file and ensure RAZORPAY_KEY_SECRET is set correctly.');
         }
 
         const { ticketType, quantity } = req.body;

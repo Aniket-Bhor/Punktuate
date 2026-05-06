@@ -2,20 +2,34 @@ const Razorpay = require('razorpay');
 const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
+const dotenv = require('dotenv');
+
+dotenv.config();
+
 const admin = require('firebase-admin');
 
-// Initialize Firebase Admin SDK
-if (!admin.apps.length) {
-    try {
-        const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT || '{}');
-        admin.initializeApp({
-            credential: admin.credential.cert(serviceAccount),
-            databaseURL: process.env.FIREBASE_DATABASE_URL
-        });
-        console.log('Firebase Admin SDK initialized successfully');
-    } catch (error) {
-        console.warn('Firebase Admin SDK initialization failed:', error.message);
+const firebaseDbUrl = 'https://punktuate-default-rtdb.firebaseio.com/';
+
+try {
+    if (!admin.apps.length) {
+        const config = {
+            databaseURL: firebaseDbUrl
+        };
+
+        if (process.env.FIREBASE_SERVICE_ACCOUNT) {
+            try {
+                const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+                config.credential = admin.credential.cert(serviceAccount);
+            } catch (e) {
+                console.error('Failed to parse FIREBASE_SERVICE_ACCOUNT from .env. Falling back to default initialization.');
+            }
+        }
+
+        admin.initializeApp(config);
+        console.log('Firebase Admin SDK initialized with database:', firebaseDbUrl);
     }
+} catch (error) {
+    console.error('Firebase Initialization Error:', error);
 }
 
 const RAZORPAY_TEST_KEY_ID = 'rzp_test_Sj1lOL9RKMWKFc';
@@ -93,15 +107,10 @@ module.exports = async (req, res) => {
                 console.error('Error writing to bookings.json:', fsError);
             }
 
-            let firebaseSaved = false;
-            let firebaseBookingId = null;
-            let firebaseError = null;
-            
             try {
                 if (admin.apps.length) {
                     const db = admin.database();
                     const bookingId = `BOOKING_${Date.now()}_${razorpay_payment_id.slice(-6)}`;
-                    firebaseBookingId = bookingId;
                     
                     const firebaseData = {
                         bookingId: bookingId,
@@ -149,22 +158,18 @@ module.exports = async (req, res) => {
                         });
                         console.log(`Firebase: Customer profile updated at customers/${customerPhone}`);
                     }
-                    
-                    firebaseSaved = true;
                 }
-            } catch (firebaseErr) {
+            } catch (firebaseError) {
                 console.error('CRITICAL: Firebase Storage Error');
-                console.error('Error Details:', firebaseErr.message);
-                firebaseError = firebaseErr.message;
+                console.error('Error Details:', firebaseError.message);
             }
 
             return res.json({ 
                 status: 'success', 
                 booking: booking,
                 firebase: {
-                    saved: firebaseSaved,
-                    bookingId: firebaseBookingId,
-                    error: firebaseError
+                    saved: admin.apps.length,
+                    bookingId: admin.apps.length ? `BOOKING_${Date.now()}_${razorpay_payment_id.slice(-6)}` : null
                 }
             });
         } else {

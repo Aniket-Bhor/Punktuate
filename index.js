@@ -403,24 +403,63 @@ function animateBars() {
     });
 }
 
+const EMAILJS_PUBLIC_KEY = '7FfjlSx153cbVbZyr';
+const EMAILJS_SERVICE_ID = 'service_izzdi9q';
+const EMAILJS_TEMPLATE_ID = 'template_ifo088f';
+
+emailjs.init(EMAILJS_PUBLIC_KEY);
+
 function handleInquiry(event) {
     event.preventDefault();
-    const name = document.getElementById('inquiryName').value;
-    const email = document.getElementById('inquiryEmail').value;
-    const vision = document.getElementById('inquiryVision').value;
     
-    if (!name || !email || !vision) {
-        alert("Please fill in all fields.");
-        return;
-    }
+    const form = document.getElementById('inquiryForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const submitText = document.getElementById('submitText');
+    const submitSpinner = document.getElementById('submitSpinner');
+    const formMessages = document.getElementById('form-messages');
     
-    const subject = encodeURIComponent("New Project Proposal from " + name);
-    const body = encodeURIComponent("Name: " + name + "\nEmail: " + email + "\n\nVision:\n" + vision);
+    formMessages.innerHTML = '';
+    submitBtn.disabled = true;
+    submitText.textContent = 'Sending...';
+    submitSpinner.classList.remove('hidden');
     
-    window.location.href = `mailto:aryapawar@punktuate.in?subject=${subject}&body=${body}`;
-    
-    // Optional: show a success message
-    alert(`Thank you ${name}! Your proposal has been prepared in your email client.`);
+    emailjs.sendForm(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, form)
+        .then((response) => {
+            console.log('Email sent successfully:', response);
+            
+            formMessages.innerHTML = `
+                <div class="form-message success">
+                    <i class="fas fa-check-circle mr-3"></i>
+                    Thank you! Your proposal has been sent successfully.
+                </div>
+            `;
+            
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 150,
+                    spread: 70,
+                    origin: { y: 0.5 },
+                    colors: ['#D4AF37', '#ffffff', '#000B3D']
+                });
+            }
+            
+            form.reset();
+        })
+        .catch((error) => {
+            console.error('EmailJS error:', error);
+            
+            formMessages.innerHTML = `
+                <div class="form-message error">
+                    <i class="fas fa-exclamation-circle mr-3"></i>
+                    Oops! Something went wrong. Please try again later.
+                </div>
+            `;
+        })
+        .finally(() => {
+            submitBtn.disabled = false;
+            submitText.textContent = 'Send Proposal';
+            submitSpinner.classList.add('hidden');
+        });
 }
 
 function toggleMobileMenu() {

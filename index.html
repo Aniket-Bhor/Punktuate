@@ -1539,11 +1539,15 @@
                         </div>
                     </div>
                     <div class="glass p-16 rounded-[60px] border border-white/10 backdrop-blur-3xl shadow-2xl">
-                        <form onsubmit="handleInquiry(event)" class="space-y-12">
-                            <input type="text" id="inquiryName" required class="w-full bg-transparent input-focus py-4 text-xl outline-none placeholder:text-white/10" placeholder="Your Name">
-                            <input type="email" id="inquiryEmail" required class="w-full bg-transparent input-focus py-4 text-xl outline-none placeholder:text-white/10" placeholder="Company Email">
-                            <textarea id="inquiryVision" required class="w-full bg-transparent input-focus py-4 text-xl outline-none h-32 resize-none placeholder:text-white/10" placeholder="The Vision"></textarea>
-                            <button type="submit" class="w-full bg-white text-[#000B3D] py-5 rounded-full luxury-caption text-[12px] font-extrabold btn-hover">Send Proposal</button>
+                        <div id="form-messages" class="mb-8"></div>
+                        <form id="inquiryForm" onsubmit="handleInquiry(event)" class="space-y-12">
+                            <input type="text" name="name" id="inquiryName" required class="w-full bg-transparent input-focus py-4 text-xl outline-none placeholder:text-white/10" placeholder="Your Name">
+                            <input type="email" name="email" id="inquiryEmail" required class="w-full bg-transparent input-focus py-4 text-xl outline-none placeholder:text-white/10" placeholder="Company Email">
+                            <textarea name="vision" id="inquiryVision" required class="w-full bg-transparent input-focus py-4 text-xl outline-none h-32 resize-none placeholder:text-white/10" placeholder="The Vision"></textarea>
+                            <button type="submit" id="submitBtn" class="w-full bg-white text-[#000B3D] py-5 rounded-full luxury-caption text-[12px] font-extrabold btn-hover flex items-center justify-center gap-4">
+                                <span id="submitText">Send Proposal</span>
+                                <i id="submitSpinner" class="fas fa-spinner fa-spin hidden"></i>
+                            </button>
                         </form>
                     </div>
                 </div>
@@ -2044,6 +2048,8 @@
         </div>
     </section>
 
+    <!-- EmailJS CDN -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <!-- Main Application Logic -->
     <script src="payment.js"></script>
     <script src="index.js"></script>
