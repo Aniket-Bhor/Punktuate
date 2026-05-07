@@ -1,7 +1,5 @@
 const Razorpay = require('razorpay');
 const crypto = require('crypto');
-const fs = require('fs');
-const path = require('path');
 const dotenv = require('dotenv');
 
 dotenv.config();
@@ -87,30 +85,13 @@ module.exports = async (req, res) => {
                 date: new Date().toISOString()
             };
 
-            const bookingsPath = path.join(__dirname, '../../bookings.json');
-            let bookings = [];
-            try {
-                if (fs.existsSync(bookingsPath)) {
-                    const data = fs.readFileSync(bookingsPath);
-                    bookings = JSON.parse(data);
-                }
-            } catch (fsError) {
-                console.error('Error reading bookings.json:', fsError);
-            }
-
-            bookings.push(booking);
+            let firebaseSaved = false;
+            let bookingId = null;
             
-            try {
-                fs.writeFileSync(bookingsPath, JSON.stringify(bookings, null, 2));
-                console.log('Booking saved to bookings.json');
-            } catch (fsError) {
-                console.error('Error writing to bookings.json:', fsError);
-            }
-
             try {
                 if (admin.apps.length) {
                     const db = admin.database();
-                    const bookingId = `BOOKING_${Date.now()}_${razorpay_payment_id.slice(-6)}`;
+                    bookingId = `BOOKING_${Date.now()}_${razorpay_payment_id.slice(-6)}`;
                     
                     const firebaseData = {
                         bookingId: bookingId,
@@ -133,6 +114,7 @@ module.exports = async (req, res) => {
 
                     await db.ref(`payments/${bookingId}`).set(firebaseData);
                     console.log(`Firebase: Transaction saved at payments/${bookingId}`);
+                    firebaseSaved = true;
 
                     if (ticketDetails?.customer?.phone) {
                         const customerPhone = ticketDetails.customer.phone.replace(/[^0-9]/g, '');
@@ -168,8 +150,8 @@ module.exports = async (req, res) => {
                 status: 'success', 
                 booking: booking,
                 firebase: {
-                    saved: admin.apps.length,
-                    bookingId: admin.apps.length ? `BOOKING_${Date.now()}_${razorpay_payment_id.slice(-6)}` : null
+                    saved: firebaseSaved,
+                    bookingId: bookingId
                 }
             });
         } else {

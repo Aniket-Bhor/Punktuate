@@ -24,18 +24,19 @@ h1, h2, .hero-text p {
 
 /* --- Navigation --- */
 #navbar {
-    transition: all 0.7s cubic-bezier(0.23, 1, 0.32, 1); /* Smooth transitions on scroll */
+    transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1); /* Smooth transitions on scroll */
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border-bottom: none;
 }
 
 /* Scrolled state for the navbar */
 #navbar.scrolled {
-    background: #000B3D;
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-bottom: 2px solid rgba(212, 175, 55, 0.5); /* Much more visible gold border */
-    padding-top: 0.8rem !important;
-    padding-bottom: 0.8rem !important;
-    box-shadow: 0 10px 40px rgba(212, 175, 55, 0.2); /* Added a subtle gold glow */
+    background: rgba(0, 11, 61, 0.78);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid rgba(212, 175, 55, 0.12);
 }
 
 .nav-link {

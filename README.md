@@ -6,7 +6,7 @@ A premium, luxury-themed marketing agency website for **Punktuate**, specializin
 
 ## 🌟 Overview
 
-Punktuate is an agency that focuses on building repeatable content engines and long-term creator partnerships. The website showcases their philosophy, services, and a dedicated journal with deep dives into strategic marketing.
+Punktuate is an agency that focuses on building repeatable content engines and long-term creator partnerships. The website showcases their philosophy, services, a dedicated journal with deep dives into strategic marketing, and a premium ticketing system for events.
 
 ### Core Philosophy:
 - **Consistency over Virality:** Moving away from short-term luck-based trends towards long-term sustainable growth.
@@ -19,22 +19,34 @@ Punktuate is an agency that focuses on building repeatable content engines and l
 
 - **Single-Page Application (SPA) Experience:** Seamless navigation between sections without full page reloads.
 - **Luxury UI/UX Design:** A sophisticated color palette of **Deep Blue (#000B3D)** and **Gold (#D4AF37)**, featuring glassmorphism and smooth transitions.
-- Interactive Journal: A collection of articles with a premium reading experience.
-- **Dynamic Navbar:** Responsive navigation that adapts its style (blur, padding, background) upon scrolling.
+- **Transparent Navbar:** Starts fully transparent, transitions to glassmorphism style on scroll.
+- **Slim Luxury Announcement Ticker:** Premium top bar with event announcements.
+- **Interactive Journal:** A collection of articles with a premium reading experience.
+- **Dynamic Influencer Directory:** Fetches and displays influencer data from the backend API.
+- **Event Ticketing System:** Complete ticket selection, customer details, and Razorpay payment integration.
 - **Scroll-Reveal Animations:** Elements fade in and slide up as the user scrolls, powered by the `IntersectionObserver` API.
 - **Infinite Loop Logo Slider:** A smooth, continuous slider for showcasing partner logos and brands.
 - **Responsive Layout:** Fully optimized for mobile, tablet, and desktop viewing.
+- **Firebase Integration:** Saves payment transactions to Firestore database.
 
 ---
 
 ## 🛠️ Tech Stack
 
-- **Frontend:** HTML5, Tailwind CSS (via CDN)
-- **Scripting:** Vanilla JavaScript
+### Frontend:
+- HTML5
+- Tailwind CSS (via CDN)
+- Vanilla JavaScript
 - **Icons:** [Lucide Icons](https://lucide.dev/), [Font Awesome 6.5.0](https://fontawesome.com/), [Boxicons 2.1.4](https://boxicons.com/)
 - **Animations:** [Canvas Confetti](https://www.npmjs.com/package/canvas-confetti) (for celebratory effects)
 - **Typography:** [Google Fonts (Inter)](https://fonts.google.com/specimen/Inter)
-- **Hosting-Ready:** Static file structure ready for deployment on Vercel, Netlify, or GitHub Pages.
+
+### Backend:
+- Node.js
+- Express.js
+- **Database:** Firebase Firestore
+- **Payment Gateway:** Razorpay
+- **Additional:** CORS, dotenv
 
 ---
 
@@ -44,9 +56,36 @@ Punktuate is an agency that focuses on building repeatable content engines and l
 ├── index.html                      # Main entry point and core website structure
 ├── index.css                       # Custom global styles and Tailwind overrides
 ├── index.js                        # Navigation logic, scroll effects, and animations
+├── server.js                       # Express backend server with APIs
+├── package.json                    # Project dependencies and scripts
+├── .env.example                    # Example environment variables
+├── vercel.json                     # Vercel deployment configuration
+│
+├── config/
+│   └── firebase.js                 # Firebase Admin SDK initialization
+│
+├── routes/
+│   └── paymentRoutes.js            # Payment API routes (create order, verify payment)
+│
+├── api/payment/
+│   ├── create-order.js             # Create Razorpay order endpoint
+│   └── verify-payment.js           # Verify Razorpay payment endpoint
+│
+├── Influencers/
+│   ├── [Influencer Name]/
+│   │   ├── [Name].jpeg             # Influencer profile image
+│   │   └── [Name].txt              # Influencer bio and details
+│   └── ...
+│
 ├── consistency-over-virality.html  # Journal Article: Why consistency beats luck
 ├── influencer-campaigns-fail.html  # Journal Article: Common pitfalls in marketing
 ├── systems-not-creators.html       # Journal Article: The importance of frameworks
+├── success.html                    # Payment success page
+├── failed.html                     # Payment failure page
+│
+├── generate-influencers-json.js   # Utility script to generate influencers JSON
+├── influencers.json                # (Legacy) Static influencer data
+│
 ├── *.png, *.jpg, *.jpeg            # Brand logos, social icons, and photographic assets
 └── *.mp4                           # Video showcases and background media
 ```
@@ -62,21 +101,93 @@ The website includes a dedicated section for thought leadership:
 
 ---
 
-## 🔧 Installation & Usage
+## � Getting Started
 
-Since this is a static website, no complex installation is required.
+### Prerequisites
+- Node.js (v14 or higher)
+- npm or yarn
+
+### Environment Variables
+
+#### Local Development
+Create a `.env` file in the root directory (use `.env.example` as a template):
+
+```env
+PORT=5000
+RAZORPAY_KEY_ID=your_razorpay_key_id
+RAZORPAY_KEY_SECRET=your_razorpay_key_secret
+FIREBASE_SERVICE_ACCOUNT=your_firebase_service_account_json_string
+```
+
+#### Vercel Production
+Add these environment variables in your Vercel project dashboard:
+- `RAZORPAY_KEY_ID`
+- `RAZORPAY_KEY_SECRET`
+- `FIREBASE_SERVICE_ACCOUNT` (JSON string of your Firebase service account key)
+
+### Installation
 
 1. **Clone the repository:**
    ```bash
    git clone <repository-url>
+   cd website
    ```
-2. **Open in Browser:**
-   Simply open `index.html` in any modern web browser.
-3. **Development Tip:**
-   For the best experience (including proper icon loading and smooth transitions), use a local development server like:
-   - **VS Code:** "Live Server" extension.
-   - **Python:** `python -m http.server 8000`
-   - **Node.js:** `npx serve .`
+
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+3. **Set up environment variables:**
+   Copy `.env.example` to `.env` and fill in your credentials.
+
+### Running the Project
+
+#### Development
+```bash
+npm start
+```
+The server will start on http://localhost:5000
+
+---
+
+## 🔌 API Endpoints
+
+### Influencers API
+- **GET** `/api/influencers` - Returns list of all influencers from the Influencers directory
+
+### Payment API
+- **POST** `/api/payment/create-order` - Creates a new Razorpay order
+- **POST** `/api/payment/verify-payment` - Verifies Razorpay payment signature
+
+---
+
+## 📦 Deployment
+
+### Vercel Deployment (Recommended)
+The project is fully configured for Vercel deployment with serverless functions!
+
+#### Step-by-Step:
+1. **Connect your repository** to Vercel
+2. **Configure environment variables** in Vercel Project Settings → Environment Variables:
+   - `RAZORPAY_KEY_ID`
+   - `RAZORPAY_KEY_SECRET`
+   - `FIREBASE_SERVICE_ACCOUNT` (paste entire Firebase service account JSON as string)
+3. **Deploy!** Vercel will automatically detect the configuration.
+
+#### Key Vercel Features:
+- Serverless functions for all API endpoints (`/api/influencers`, `/api/payment/*`)
+- SPA fallback routing (all routes serve `index.html` for client-side navigation)
+- Static asset serving for images, videos, etc.
+
+### Other Platforms
+For platforms like Netlify, Heroku, etc.:
+- You'll need to run the full Express server (`npm start`)
+- Note: Serverless functions won't work natively; you'll need to use the Express server
+
+#### Static Hosting Only:
+- Payment and influencer API features will not work
+- Use only for frontend preview
 
 ---
 
@@ -92,6 +203,6 @@ Since this is a static website, no complex installation is required.
 
 ---
 
-## ⚖️ License
+## 📝 License
 
 Copyright © 2026 Punktuate - All Rights Reserved.

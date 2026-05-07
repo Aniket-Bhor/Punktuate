@@ -6,7 +6,7 @@
       "use": "@vercel/node"
     },
     {
-      "src": "**/*.{html,css,js,png,jpg,jpeg,gif,svg,mp4,webm,json}",
+      "src": "**/*.{html,css,js,png,jpg,jpeg,gif,svg,mp4,webm,json,txt}",
       "use": "@vercel/static"
     }
   ],
@@ -14,6 +14,14 @@
     {
       "src": "/api/(.*)",
       "dest": "/api/$1"
+    },
+    {
+      "src": "/Influencers/(.*)",
+      "dest": "/Influencers/$1"
+    },
+    {
+      "src": "/(.*\\.(html|css|js|png|jpg|jpeg|gif|svg|mp4|webm|json|txt|ico))$",
+      "dest": "/$1"
     },
     {
       "src": "/(.*)",

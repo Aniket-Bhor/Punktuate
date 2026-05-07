@@ -917,9 +917,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 /* --- Navbar Scroll Effects --- */
-// Scroll effects disabled as per user request to keep header absolute and non-scrolling
 window.addEventListener('scroll', () => {
-    // Logic removed to prevent header following scroll
+    const navbar = document.getElementById('navbar');
+    if (window.scrollY > 50) {
+        navbar.classList.add('scrolled');
+    } else {
+        navbar.classList.remove('scrolled');
+    }
 });
 
 
@@ -963,14 +967,14 @@ async function loadInfluencers() {
     if (!grid) return;
 
     try {
-        // Step 1: Fetch influencers.json
-        const response = await fetch('influencers.json');
-        if (!response.ok) throw new Error('Could not fetch influencers.json');
+        // Step 1: Fetch from our new API endpoint
+        const response = await fetch('/api/influencers');
+        if (!response.ok) throw new Error('Could not fetch /api/influencers');
         
         const influencers = await response.json();
         
         if (!influencers || influencers.length === 0) {
-            console.warn('No influencer data found in influencers.json');
+            console.warn('No influencer data found');
             return;
         }
 
@@ -985,7 +989,9 @@ async function loadInfluencers() {
  * Renders influencer cards to the grid.
  */
 function renderInfluencers(influencers) {
+    console.log('Rendering influencers:', influencers);
     const grid = document.getElementById('influencer-grid');
+    console.log('Rendering to grid element:', grid);
     if (!grid) return;
 
     // Apply responsive grid layout
@@ -998,10 +1004,11 @@ function renderInfluencers(influencers) {
     }
 
     grid.innerHTML = influencers.map(inf => `
-        <div class="influencer-card glass rounded-[40px] p-8 border border-white/5 flex flex-col group scroll-reveal">
-            <div class="influencer-image-wrapper mb-8 shadow-2xl overflow-hidden relative">
-                <img src="${inf.image || 'placeholder.jpg'}" alt="${inf.name}" class="w-full h-full object-cover">
-                <div class="absolute inset-0 bg-gradient-to-t from-[#000B3D]/60 via-transparent to-transparent opacity-60"></div>
+        ${inf.link ? `<a href="${inf.link}" target="_blank" class="block">` : '<div>'}
+        <div class="influencer-card glass rounded-[40px] p-8 border border-white/5 flex flex-col group scroll-reveal cursor-pointer">
+            <div class="relative overflow-hidden rounded-[30px] w-48 h-48 glass border border-white/10 mb-8 mx-auto hover:border-[#D4AF37]/50 transition-all duration-500">
+                <img src="${inf.image || 'placeholder.jpg'}?t=${Date.now()}" alt="${inf.name}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                <div class="absolute inset-0 bg-gradient-to-t from-[#000B3D]/40 to-transparent"></div>
             </div>
             
             <div class="flex-grow text-center">
@@ -1013,13 +1020,14 @@ function renderInfluencers(influencers) {
 
             <div class="mt-auto flex justify-center">
                 ${inf.link ? `
-                    <a href="${inf.link}" target="_blank" class="btn-hover bg-[#D4AF37] text-[#000B3D] px-8 py-3 rounded-full luxury-caption text-[10px] font-extrabold flex items-center gap-2 group/btn shadow-lg">
+                    <div class="btn-hover bg-[#D4AF37] text-[#000B3D] px-8 py-3 rounded-full luxury-caption text-[10px] font-extrabold flex items-center gap-2 group/btn shadow-lg">
                         <i class="bx bxl-instagram text-lg"></i>
                         View Profile
-                    </a>
+                    </div>
                 ` : ''}
             </div>
         </div>
+        ${inf.link ? '</a>' : '</div>'}
     `).join('');
 
     // Re-initialize scroll reveal for new elements

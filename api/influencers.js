@@ -1,61 +1,29 @@
-const express = require('express');
-const cors = require('cors');
-const dotenv = require('dotenv');
 const path = require('path');
 const fs = require('fs');
 
-dotenv.config();
-
-// Validate environment variables
-console.log('--- Environment Check ---');
-console.log('PORT:', process.env.PORT);
-console.log('RAZORPAY_KEY_ID exists:', !!process.env.RAZORPAY_KEY_ID);
-console.log('RAZORPAY_KEY_SECRET exists:', !!process.env.RAZORPAY_KEY_SECRET && process.env.RAZORPAY_KEY_SECRET !== 'YOUR_SECRET_HERE');
-
-if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET || process.env.RAZORPAY_KEY_SECRET === 'YOUR_SECRET_HERE') {
-    console.error('CRITICAL ERROR: Razorpay keys are missing or invalid in .env file!');
-}
-console.log('-------------------------');
-
-const paymentRoutes = require('./routes/paymentRoutes');
-
-const app = express();
-const PORT = process.env.PORT || 5000;
-
-app.use(cors());
-app.use(express.json());
-
-// Serve static files from the current directory
-app.use(express.static(__dirname));
-
-// Endpoint to get all influencers from the Influencers directory
-app.get('/api/influencers', (req, res) => {
-    const influencersDir = path.join(__dirname, 'Influencers');
+module.exports = (req, res) => {
+    const influencersDir = path.join(process.cwd(), 'Influencers');
     
     try {
-        // Read all directories in Influencers folder
         const items = fs.readdirSync(influencersDir, { withFileTypes: true });
         const influencerFolders = items.filter(item => item.isDirectory());
         
         const influencers = [];
         
-        // Process each influencer folder
         for (const folder of influencerFolders) {
             const folderPath = path.join(influencersDir, folder.name);
             const files = fs.readdirSync(folderPath);
             
-            // Find profile image (any jpeg/jpg/png file)
             const imageFile = files.find(file => 
                 file.toLowerCase().endsWith('.jpeg') || 
                 file.toLowerCase().endsWith('.jpg') || 
                 file.toLowerCase().endsWith('.png')
             );
             
-            // Find data txt file (any .txt file)
             const txtFile = files.find(file => file.toLowerCase().endsWith('.txt') && !file.includes('Folder Structure'));
             
             const influencer = {
-                name: folder.name, // default to folder name
+                name: folder.name,
                 username: '',
                 followers: '',
                 bio: '',
@@ -64,7 +32,6 @@ app.get('/api/influencers', (req, res) => {
                 image: imageFile ? `Influencers/${folder.name}/${imageFile}` : ''
             };
             
-            // Parse data from txt file if it exists
             if (txtFile) {
                 const txtPath = path.join(folderPath, txtFile);
                 const content = fs.readFileSync(txtPath, 'utf-8');
@@ -104,7 +71,6 @@ app.get('/api/influencers', (req, res) => {
                             influencer.platform = parts[1].trim();
                         }
                     } else {
-                        // If it's a line that's not a key-value pair, add to bio
                         if (influencer.bio) {
                             influencer.bio += ' ' + line;
                         } else {
@@ -113,7 +79,6 @@ app.get('/api/influencers', (req, res) => {
                     }
                 }
                 
-                // If we have username but no link, build the Instagram link
                 if (influencer.username && !influencer.link) {
                     influencer.link = `https://www.instagram.com/${influencer.username}`;
                 }
@@ -127,17 +92,4 @@ app.get('/api/influencers', (req, res) => {
         console.error('Error reading influencers directory:', error);
         res.status(500).json({ error: 'Failed to load influencers' });
     }
-});
-
-// Routes
-app.use('/api/payment', paymentRoutes);
-
-// Serve index.html for all other routes (SPA fallback)
-app.use((req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
-});
-
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-    console.log(`Open http://localhost:${PORT} to view the website`);
-});
+};
