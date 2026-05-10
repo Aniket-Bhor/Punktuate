@@ -2,19 +2,11 @@
   "version": 2,
   "builds": [
     {
-      "src": "api/**/*.js",
-      "use": "@vercel/node"
-    },
-    {
       "src": "**/*.{html,css,js,png,jpg,jpeg,gif,svg,mp4,webm,json,txt}",
       "use": "@vercel/static"
     }
   ],
   "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/api/$1"
-    },
     {
       "src": "/Influencers/(.*)",
       "dest": "/Influencers/$1"

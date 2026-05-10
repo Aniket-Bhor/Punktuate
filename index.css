@@ -244,7 +244,6 @@ h1, h2, .hero-text p {
     box-shadow: 0 0 20px rgba(212, 175, 55, 0.6);
 }
 
-
 /* --- Video Showcase (New Section) --- */
 .scroll-reveal {
     opacity: 0;
@@ -337,4 +336,86 @@ h1, h2, .hero-text p {
 /* Hidden class */
 .hidden {
     display: none !important;
+}
+
+/* --- Mobile Responsiveness --- */
+@media (max-width: 768px) {
+    /* Smaller logo on mobile */
+    .nav-logo {
+        height: 32px;
+    }
+    
+    /* Hero text sizing for mobile */
+    .hero-text h1, .hero-text h2 {
+        font-size: 2.5rem !important;
+        line-height: 1.1 !important;
+    }
+    
+    .hero-text p {
+        font-size: 1rem !important;
+    }
+    
+    /* Section headings for mobile */
+    section h2 {
+        font-size: 2.5rem !important;
+    }
+    
+    section h3 {
+        font-size: 1.5rem !important;
+    }
+    
+    /* Grid spacing for mobile */
+    .grid {
+        gap: 1.5rem !important;
+    }
+    
+    /* Glass padding on mobile */
+    .glass {
+        padding: 1.5rem !important;
+    }
+    
+    /* Stat boxes on mobile */
+    .stat-box {
+        height: 150px;
+        padding: 1rem;
+    }
+    
+    /* Buttons on mobile */
+    .btn-hover {
+        padding: 0.875rem 1.5rem !important;
+        font-size: 0.875rem !important;
+    }
+    
+    /* Luxury caption smaller on mobile */
+    .luxury-caption {
+        letter-spacing: 0.2em;
+        font-size: 0.75rem;
+    }
+    
+    /* Section padding on mobile */
+    .page {
+        padding-top: 5rem !important;
+        padding-bottom: 5rem !important;
+    }
+    
+    /* Influencer cards on mobile */
+    .influencer-card {
+        padding: 1rem !important;
+    }
+    
+    /* Journal cards on mobile */
+    #journal-grid {
+        gap: 1.5rem !important;
+    }
+}
+
+/* Extra small screens */
+@media (max-width: 480px) {
+    .hero-text h1, .hero-text h2 {
+        font-size: 2rem !important;
+    }
+    
+    section h2 {
+        font-size: 2rem !important;
+    }
 }

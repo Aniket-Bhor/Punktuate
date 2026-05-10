@@ -13,7 +13,6 @@
     <link rel="icon" type="image/png" href="exclamation.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     
     <!-- Firebase SDK for Database Support -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -509,9 +508,9 @@
 <body class="pt-0">
 
     <!-- Notification Banner -->
-    <div id="notification-banner" class="absolute top-0 w-full h-[32px] z-[200] bg-[#D4AF37]/90 text-[#000B3D] flex items-center justify-center gap-3 cursor-pointer transition-all hover:bg-white backdrop-blur-md" onclick="showPage('event-apurva')">
+    <div id="notification-banner" class="absolute top-0 w-full h-[32px] z-[200] bg-[#D4AF37]/90 text-[#000B3D] flex items-center justify-center gap-3 cursor-pointer transition-all hover:bg-white backdrop-blur-md hidden" onclick="showPage('event-apurva')">
         <span class="luxury-caption text-[9px] font-black tracking-[0.15em] animate-pulse">Announcement</span>
-        <p class="text-[10px] font-bold uppercase tracking-tight">The Phoolish Concert by Apurva Bondre – 13th June, Mumbai</p>
+        <p class="text-[10px] font-bold uppercase tracking-tight"></p>
         <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
     </div>
 
@@ -578,7 +577,7 @@
                     <div class="absolute inset-0 bg-gradient-to-b from-[#000B3D]/90 via-transparent to-[#000B3D]"></div>
                 </div>
                 <div class="relative z-10 text-center px-6 max-w-5xl mx-auto">
-                    <span class="text-[#D4AF37] luxury-caption text-[14px] mb-8 block font-bold tracking-[0.5em] animate-pulse">Experience Freedom</span>
+                    
                     <h2 class="text-3xl md:text-5xl lg:text-7xl font-black tracking-tighter lowercase leading-[1.1] mb-8">
                         we handle your <span class="text-[#D4AF37]">social media</span> so you can enjoy <span class="text-white/60">views like this.</span>
                     </h2>
@@ -1276,25 +1275,7 @@
                         <span class="text-[#D4AF37] luxury-caption text-[14px] mb-6 block font-bold">Leadership</span>
                         <h2 class="text-7xl md:text-8xl font-extrabold tracking-tighter mb-4 lowercase">The <span class="text-white/20">Founders.</span></h2>
                     </div>
-                    <div class="flex flex-col md:flex-row justify-center gap-24 lg:gap-32">
-                        <!-- Founder 1 -->
-                        <div class="group cursor-pointer text-center md:text-left flex flex-col items-center md:items-start" onclick="openFounderModal('arya')">
-                            <div class="relative overflow-hidden rounded-[30px] w-48 h-48 glass border border-white/10 mb-6 hover:border-[#D4AF37]/50 transition-all duration-500">
-                                <img src="aryapic.png" alt="Arya Pawar" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
-                                <div class="absolute inset-0 bg-gradient-to-t from-[#000B3D]/40 to-transparent"></div>
-                            </div>
-                            <h3 class="text-3xl font-bold mb-1">Arya Pawar</h3>
-                            <p class="luxury-caption text-[11px] text-[#D4AF37]">Co-Founder, Punktuate</p>
-                        </div>
-                        <!-- Founder 2 -->
-                        <div class="group cursor-pointer text-center md:text-left flex flex-col items-center md:items-start" onclick="openFounderModal('avanti')">
-                            <div class="relative overflow-hidden rounded-[30px] w-48 h-48 glass border border-white/10 mb-6 hover:border-[#D4AF37]/50 transition-all duration-500">
-                                <img src="_ASH7503.jpeg" alt="Avanti Thakur" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
-                                <div class="absolute inset-0 bg-gradient-to-t from-[#000B3D]/40 to-transparent"></div>
-                            </div>
-                            <h3 class="text-3xl font-bold mb-1">Avanti Thakur</h3>
-                            <p class="luxury-caption text-[11px] text-[#D4AF37]">Co-Founder, Punktuate</p>
-                        </div>
+                    <div id="founders-grid" class="flex flex-col md:flex-row justify-center gap-24 lg:gap-32">
                     </div>
                 </div>
 
@@ -1313,6 +1294,16 @@
                         <div id="influencer-grid" class="grid gap-12 transition-all duration-700">
                             <!-- Influencer cards injected here -->
                         </div>
+                    </div>
+                </div>
+
+                <!-- THE FACES BEHIND PUNKTUATE SECTION -->
+                <div class="mt-40 scroll-reveal">
+                    <div class="text-center mb-24">
+                        <span class="text-[#D4AF37] luxury-caption text-[14px] mb-6 block font-bold">The Team</span>
+                        <h2 class="text-7xl md:text-8xl font-extrabold tracking-tighter mb-4 lowercase">The faces behind <span class="text-white/20">punktuate.</span></h2>
+                    </div>
+                    <div id="faces-grid" class="flex flex-col md:flex-row justify-center gap-24 lg:gap-32">
                     </div>
                 </div>
 
@@ -1360,31 +1351,7 @@
         <section id="journal" class="page px-6 py-40">
             <div class="max-w-7xl mx-auto text-center">
                 <h2 class="text-6xl md:text-8xl font-extrabold tracking-tighter mb-4 lowercase">The Journal.</h2>
-                <div class="grid md:grid-cols-3 gap-10 mt-32">
-                    <a href="influencer-campaigns-fail.html" class="group cursor-pointer text-left block">
-                        <div class="aspect-video bg-white/5 rounded-[30px] mb-8 overflow-hidden border border-white/5 hover-card">
-                            <div class="w-full h-full bg-gradient-to-tr from-[#000B3D] via-blue-900 to-[#D4AF37]/20 group-hover:scale-110 transition-all duration-700"></div>
-                        </div>
-                        <span class="text-[#D4AF37] luxury-caption text-[10px] mb-2 block opacity-60">3 min read</span>
-                        <h3 class="text-2xl font-bold mb-2 group-hover:text-[#D4AF37] transition-all">Why Most Influencer Campaigns Fail.</h3>
-                        <p class="text-white/40 text-sm">(And how we fix broken execution)</p>
-                    </a>
-                    <a href="systems-not-creators.html" class="group cursor-pointer text-left block">
-                        <div class="aspect-video bg-white/5 rounded-[30px] mb-8 overflow-hidden border border-white/5 hover-card">
-                            <div class="w-full h-full bg-gradient-to-br from-[#000B3D] via-purple-900 to-[#D4AF37]/20 group-hover:scale-110 transition-all duration-700"></div>
-                        </div>
-                        <span class="text-[#D4AF37] luxury-caption text-[10px] mb-2 block opacity-60">4 min read</span>
-                        <h3 class="text-2xl font-bold mb-2 group-hover:text-[#D4AF37] transition-all">Creators Don’t Miss Deadlines. Systems Do.</h3>
-                        <p class="text-white/40 text-sm">(Building reliability at scale)</p>
-                    </a>
-                    <a href="consistency-over-virality.html" class="group cursor-pointer text-left block">
-                        <div class="aspect-video bg-white/5 rounded-[30px] mb-8 overflow-hidden border border-white/5 hover-card">
-                            <div class="w-full h-full bg-gradient-to-bl from-[#000B3D] via-indigo-900 to-[#D4AF37]/20 group-hover:scale-110 transition-all duration-700"></div>
-                        </div>
-                        <span class="text-[#D4AF37] luxury-caption text-[10px] mb-2 block opacity-60">3 min read</span>
-                        <h3 class="text-2xl font-bold mb-2 group-hover:text-[#D4AF37] transition-all">Virality is Luck. Consistency is Strategy.</h3>
-                        <p class="text-white/40 text-sm">(Why brands should stop chasing trends)</p>
-                    </a>
+                <div id="journal-grid" class="grid md:grid-cols-3 gap-10 mt-32">
                 </div>
             </div>
         </section>
@@ -1493,21 +1460,7 @@
         <section id="jobs" class="page px-6 py-40">
             <div class="max-w-7xl mx-auto">
                 <h2 class="text-6xl md:text-8xl font-extrabold tracking-tighter mb-20 lowercase leading-none">work with <span class="text-white/20">us.</span></h2>
-                <div class="space-y-6">
-                    <div onclick="window.location.href='mailto:aryapawar@punktuate.in?subject=Job Application: Graphic Designer&body=Hello, I would like to apply for the Graphic Designer position. Please find my resume attached.'" class="glass p-12 rounded-[40px] flex flex-col md:flex-row justify-between items-center group hover:border-[#D4AF37]/50 transition-all cursor-pointer border border-white/5">
-                        <h3 class="text-3xl font-bold">Graphic Designer</h3>
-                        <div class="flex items-center gap-6">
-                            <span class="luxury-caption text-[11px] text-[#D4AF37] opacity-0 group-hover:opacity-100 transition-all">Mail your resume</span>
-                            <button class="bg-white/10 p-6 rounded-full group-hover:bg-[#D4AF37] transition-all"><i data-lucide="mail"></i></button>
-                        </div>
-                    </div>
-                    <div onclick="window.location.href='mailto:aryapawar@punktuate.in?subject=Job Application: Video Editor&body=Hello, I would like to apply for the Video Editor position. Please find my resume attached.'" class="glass p-12 rounded-[40px] flex flex-col md:flex-row justify-between items-center group hover:border-[#D4AF37]/50 transition-all cursor-pointer border border-white/5">
-                        <h3 class="text-3xl font-bold">Video Editor</h3>
-                        <div class="flex items-center gap-6">
-                            <span class="luxury-caption text-[11px] text-[#D4AF37] opacity-0 group-hover:opacity-100 transition-all">Mail your resume</span>
-                            <button class="bg-white/10 p-6 rounded-full group-hover:bg-[#D4AF37] transition-all"><i data-lucide="mail"></i></button>
-                        </div>
-                    </div>
+                <div id="careers-grid" class="space-y-6">
                 </div>
             </div>
         </section>

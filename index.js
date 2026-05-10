@@ -224,9 +224,6 @@ const portfolioData = {
 let selectedTicket = { name: '', price: 0, qty: 1 };
 let customerData = { name: '', age: '', phone: '', email: '', city: '' };
 
-// Razorpay Key ID - Replace with live Key ID in production
-const RAZORPAY_KEY_ID = 'rzp_test_REPLACE_ME';
-
 /* --- Firebase Database Initialization --- */
 // Replace with your actual Firebase config
 const firebaseConfig = {
@@ -823,6 +820,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Load Influencers
     loadInfluencers();
+    
+    // Load Announcements
+    loadAnnouncements();
+    
+    // Load Journals
+    loadJournals();
+    
+    // Load Founders
+    loadFounders();
+    
+    // Load Faces
+    loadFaces();
+    
+    // Load Careers
+    loadCareers();
 
     // Konami Code Listener
     window.addEventListener('keydown', (e) => {
@@ -961,28 +973,342 @@ document.querySelectorAll('.scroll-reveal').forEach(el => {
 lucide.createIcons();
 
 
+function getDefaultInfluencers() {
+    return [
+        {
+            id: '1',
+            name: 'Vartika Vashista',
+            username: 'vartikavashista',
+            followers: '50K',
+            bio: 'Fashion & lifestyle influencer based in Mumbai',
+            link: 'https://instagram.com/vartikavashista',
+            image: 'Influencers/Vartika Vashista/Vartika.jpeg',
+            platform: 'Instagram'
+        },
+        {
+            id: '2',
+            name: 'Aditi Fadtare',
+            username: 'aditifadtare',
+            followers: '35K',
+            bio: 'Content creator & digital marketer',
+            link: 'https://instagram.com/aditifadtare',
+            image: 'Influencers/Aditi Fadtare/Aditi.jpeg',
+            platform: 'Instagram'
+        },
+        {
+            id: '3',
+            name: 'Dhanshri Dake',
+            username: 'dhanshridake',
+            followers: '28K',
+            bio: 'Lifestyle & travel influencer',
+            link: 'https://instagram.com/dhanshridake',
+            image: 'Influencers/Dhanshri Dake/Dhanashri.jpeg',
+            platform: 'Instagram'
+        },
+        {
+            id: '4',
+            name: 'Osbert Dsouza',
+            username: 'osbertdsouza',
+            followers: '42K',
+            bio: 'Fitness & wellness content creator',
+            link: 'https://instagram.com/osbertdsouza',
+            image: 'Influencers/Osbert Dsouza/Osbert.jpeg',
+            platform: 'Instagram'
+        },
+        {
+            id: '5',
+            name: 'Shruti Dange',
+            username: 'shrutidange',
+            followers: '38K',
+            bio: 'Beauty & fashion influencer',
+            link: 'https://instagram.com/shrutidange',
+            image: 'Influencers/Shruti Dange/Shruti Dange.jpeg',
+            platform: 'Instagram'
+        }
+    ];
+}
+
+function getDefaultAnnouncements() {
+    return [
+        {
+            id: '1',
+            text: 'The Phoolish Concert by Apurva Bondre – 13th June, Mumbai'
+        }
+    ];
+}
+
+function getDefaultJournals() {
+    return [
+        {
+            id: '1',
+            title: 'Why Most Influencer Campaigns Fail.',
+            readTime: '3 min read',
+            description: '(And how we fix broken execution)',
+            link: 'influencer-campaigns-fail.html',
+            image: ''
+        },
+        {
+            id: '2',
+            title: 'Creators Don’t Miss Deadlines. Systems Do.',
+            readTime: '4 min read',
+            description: '(Building reliability at scale)',
+            link: 'systems-not-creators.html',
+            image: ''
+        },
+        {
+            id: '3',
+            title: 'Virality is Luck. Consistency is Strategy.',
+            readTime: '3 min read',
+            description: '(Why brands should stop chasing trends)',
+            link: 'consistency-over-virality.html',
+            image: ''
+        }
+    ];
+}
+
+function loadAnnouncements() {
+    const stored = localStorage.getItem('punktuate_announcements');
+    const defaultAnnouncements = getDefaultAnnouncements();
+    let announcements = [];
+    
+    if (stored) {
+        announcements = JSON.parse(stored);
+    } else {
+        announcements = defaultAnnouncements;
+        localStorage.setItem('punktuate_announcements', JSON.stringify(announcements));
+    }
+    
+    renderAnnouncements(announcements);
+}
+
+function loadJournals() {
+    const stored = localStorage.getItem('punktuate_journals');
+    const defaultJournals = getDefaultJournals();
+    let journals = [];
+    
+    if (stored) {
+        journals = JSON.parse(stored);
+    } else {
+        journals = defaultJournals;
+        localStorage.setItem('punktuate_journals', JSON.stringify(journals));
+    }
+    
+    renderJournals(journals);
+}
+
+function renderAnnouncements(announcements) {
+    const banner = document.getElementById('notification-banner');
+    if (!banner) return;
+    
+    if (announcements.length > 0) {
+        const latest = announcements[announcements.length - 1];
+        const textEl = banner.querySelector('p');
+        if (textEl) textEl.textContent = latest.text;
+        banner.style.display = 'flex';
+    } else {
+        banner.style.display = 'none';
+    }
+}
+
+function renderJournals(journals) {
+    const container = document.getElementById('journal-grid');
+    if (!container) return;
+    
+    if (journals.length === 0) {
+        container.innerHTML = '';
+        return;
+    }
+    
+    container.innerHTML = journals.map(jrn => `
+        <a href="${jrn.link || '#'}" class="group cursor-pointer text-left block">
+            <div class="aspect-video bg-white/5 rounded-[30px] mb-8 overflow-hidden border border-white/5 hover-card">
+                ${jrn.image 
+                    ? `<img src="${jrn.image}" class="w-full h-full object-cover group-hover:scale-110 transition-all duration-700" alt="${jrn.title}">`
+                    : `<div class="w-full h-full bg-gradient-to-tr from-[#000B3D] via-blue-900 to-[#D4AF37]/20 group-hover:scale-110 transition-all duration-700"></div>`
+                }
+            </div>
+            <span class="text-[#D4AF37] luxury-caption text-[10px] mb-2 block opacity-60">${jrn.readTime || '3 min read'}</span>
+            <h3 class="text-2xl font-bold mb-2 group-hover:text-[#D4AF37] transition-all">${jrn.title}</h3>
+            <p class="text-white/40 text-sm">${jrn.description || ''}</p>
+        </a>
+    `).join('');
+}
+
+function getDefaultFounders() {
+    return [
+        {
+            id: '1',
+            name: 'Arya Pawar',
+            title: 'Co-Founder, Punktuate',
+            image: 'aryapic.png'
+        },
+        {
+            id: '2',
+            name: 'Avanti Thakur',
+            title: 'Co-Founder, Punktuate',
+            image: '_ASH7503.jpeg'
+        }
+    ];
+}
+
+function getDefaultFaces() {
+    return [];
+}
+
+function getDefaultCareers() {
+    return [
+        {
+            id: '1',
+            position: 'Graphic Designer',
+            email: 'aryapawar@punktuate.in'
+        },
+        {
+            id: '2',
+            position: 'Video Editor',
+            email: 'aryapawar@punktuate.in'
+        }
+    ];
+}
+
+function loadCareers() {
+    const grid = document.getElementById('careers-grid');
+    if (!grid) return;
+
+    const stored = localStorage.getItem('punktuate_careers');
+    const defaultCareers = getDefaultCareers();
+    let careers = [];
+    
+    if (stored) {
+        careers = JSON.parse(stored);
+    } else {
+        careers = defaultCareers;
+        localStorage.setItem('punktuate_careers', JSON.stringify(careers));
+    }
+    
+    renderCareers(careers);
+}
+
+function renderCareers(careers) {
+    const container = document.getElementById('careers-grid');
+    if (!container) return;
+    
+    if (careers.length === 0) {
+        container.innerHTML = `
+            <div class="col-span-full glass rounded-[40px] p-12 border border-white/10 text-center">
+                <p class="text-xl text-white/40">No job openings right now, check back later!</p>
+            </div>
+        `;
+        return;
+    }
+    
+    container.innerHTML = careers.map(c => `
+        <div onclick="window.location.href='mailto:${c.email}?subject=Job Application: ${encodeURIComponent(c.position)}&body=Hello, I would like to apply for the ${encodeURIComponent(c.position)} position. Please find my resume attached.'" class="glass p-12 rounded-[40px] flex flex-col md:flex-row justify-between items-center group hover:border-[#D4AF37]/50 transition-all cursor-pointer border border-white/5">
+            <h3 class="text-3xl font-bold">${c.position}</h3>
+            <div class="flex items-center gap-6">
+                <span class="luxury-caption text-[11px] text-[#D4AF37] opacity-0 group-hover:opacity-100 transition-all">Mail your resume</span>
+                <button class="bg-white/10 p-6 rounded-full group-hover:bg-[#D4AF37] transition-all"><i data-lucide="mail"></i></button>
+            </div>
+        </div>
+    `).join('');
+}
+
+function loadFaces() {
+    const grid = document.getElementById('faces-grid');
+    if (!grid) return;
+
+    const stored = localStorage.getItem('punktuate_faces');
+    const defaultFaces = getDefaultFaces();
+    let faces = [];
+    
+    if (stored) {
+        faces = JSON.parse(stored);
+    } else {
+        faces = defaultFaces;
+        localStorage.setItem('punktuate_faces', JSON.stringify(faces));
+    }
+    
+    renderFaces(faces);
+}
+
+function renderFaces(faces) {
+    const container = document.getElementById('faces-grid');
+    if (!container) return;
+    
+    if (faces.length === 0) {
+        container.innerHTML = '';
+        return;
+    }
+    
+    container.innerHTML = faces.map(fdr => `
+        <div class="group cursor-pointer text-center md:text-left flex flex-col items-center md:items-start">
+            <div class="relative overflow-hidden rounded-[30px] w-48 h-48 glass border border-white/10 mb-6 hover:border-[#D4AF37]/50 transition-all duration-500">
+                <img src="${fdr.image || 'placeholder.jpg'}" alt="${fdr.name}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                <div class="absolute inset-0 bg-gradient-to-t from-[#000B3D]/40 to-transparent"></div>
+            </div>
+            <h3 class="text-3xl font-bold mb-1">${fdr.name}</h3>
+            <p class="luxury-caption text-[11px] text-[#D4AF37]">${fdr.role}</p>
+        </div>
+    `).join('');
+}
+
+function loadFounders() {
+    const grid = document.getElementById('founders-grid');
+    if (!grid) return;
+
+    const stored = localStorage.getItem('punktuate_founders');
+    const defaultFounders = getDefaultFounders();
+    let founders = [];
+    
+    if (stored) {
+        founders = JSON.parse(stored);
+    } else {
+        founders = defaultFounders;
+        localStorage.setItem('punktuate_founders', JSON.stringify(founders));
+    }
+    
+    renderFounders(founders);
+}
+
+function renderFounders(founders) {
+    const container = document.getElementById('founders-grid');
+    if (!container) return;
+    
+    if (founders.length === 0) {
+        container.innerHTML = '';
+        return;
+    }
+    
+    container.innerHTML = founders.map(fdr => `
+        <div class="group cursor-pointer text-center md:text-left flex flex-col items-center md:items-start">
+            <div class="relative overflow-hidden rounded-[30px] w-48 h-48 glass border border-white/10 mb-6 hover:border-[#D4AF37]/50 transition-all duration-500">
+                <img src="${fdr.image || 'placeholder.jpg'}" alt="${fdr.name}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                <div class="absolute inset-0 bg-gradient-to-t from-[#000B3D]/40 to-transparent"></div>
+            </div>
+            <h3 class="text-3xl font-bold mb-1">${fdr.name}</h3>
+            <p class="luxury-caption text-[11px] text-[#D4AF37]">${fdr.title}</p>
+        </div>
+    `).join('');
+}
+
 /* --- Dynamic Influencer Loading --- */
-async function loadInfluencers() {
+function loadInfluencers() {
     const grid = document.getElementById('influencer-grid');
     if (!grid) return;
 
-    try {
-        // Step 1: Fetch from our new API endpoint
-        const response = await fetch('/api/influencers');
-        if (!response.ok) throw new Error('Could not fetch /api/influencers');
-        
-        const influencers = await response.json();
-        
-        if (!influencers || influencers.length === 0) {
-            console.warn('No influencer data found');
-            return;
-        }
-
-        renderInfluencers(influencers);
-
-    } catch (error) {
-        console.error('Influencer loading error:', error);
+    const hasReset = localStorage.getItem('punktuate_admin_reset_done');
+    const stored = localStorage.getItem('punktuate_influencers');
+    const defaultInfluencers = getDefaultInfluencers();
+    let influencers = [];
+    
+    if (stored && hasReset) {
+        influencers = JSON.parse(stored);
+    } else {
+        influencers = defaultInfluencers;
+        localStorage.setItem('punktuate_influencers', JSON.stringify(influencers));
+        if (!hasReset) localStorage.setItem('punktuate_admin_reset_done', 'true');
     }
+    
+    renderInfluencers(influencers);
 }
 
 /**
