@@ -280,14 +280,7 @@ app.get('/api/config', (req, res) => {
     res.json({ razorpayKeyId: process.env.RAZORPAY_KEY_ID });
 });
 
-/* ── SPA Fallback ────────────────────────────────────────────── */
-app.use((req, res, next) => {
-    if (!req.path.startsWith('/api')) {
-        res.sendFile(path.join(__dirname, 'index.html'));
-    } else {
-        next();
-    }
-});
+// Removed SPA fallback to prevent intercepting static file 404s on Vercel
 
 /* ── Start (local dev only — Vercel uses module.exports) ─────── */
 if (!process.env.VERCEL) {
