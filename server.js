@@ -32,13 +32,20 @@ const razorpay = new Razorpay({
 // back to unauthenticated REST if no service-account JSON is set.
 let db;
 try {
+    let credential = admin.credential.applicationDefault();
+    if (process.env.FIREBASE_SERVICE_ACCOUNT) {
+        try {
+            const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+            credential = admin.credential.cert(serviceAccount);
+        } catch (e) {
+            console.warn('  ⚠ Failed to parse FIREBASE_SERVICE_ACCOUNT JSON:', e.message);
+        }
+    }
+
     if (!admin.apps.length) {
         admin.initializeApp({
-            // For local dev without a service account key, we use the
-            // database URL with open rules (set rules to public for dev).
-            // In production, add GOOGLE_APPLICATION_CREDENTIALS env var.
             databaseURL: process.env.FIREBASE_DATABASE_URL,
-            credential: admin.credential.applicationDefault(),
+            credential: credential,
         });
     }
     db = admin.database();
