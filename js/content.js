@@ -30,19 +30,26 @@ function observeRevealElements(root = document) {
  * @returns {Promise<Array>}
  */
 async function fetchCollection(collection, fallback) {
+    let serverData = [];
     try {
         const res = await fetch(`/api/${collection}`);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
-        // If Firebase is empty / returns [] use defaults
-        if (Array.isArray(data) && data.length === 0 && fallback) {
-            return fallback();
+        if (Array.isArray(data)) {
+            serverData = data;
         }
-        return data;
     } catch (err) {
-        console.warn(`[content] /api/${collection} unreachable, using defaults:`, err.message);
-        return fallback ? fallback() : [];
+        console.warn(`[content] /api/${collection} unreachable:`, err.message);
     }
+    
+    // Always merge with fallback so defaults are never overridden
+    if (fallback) {
+        const defaults = fallback();
+        const existingIds = new Set(serverData.map(item => item.id));
+        const missingDefaults = defaults.filter(item => !existingIds.has(item.id));
+        return [...missingDefaults, ...serverData];
+    }
+    return serverData;
 }
 
 /* ── Influencers ─────────────────────────────────────────────── */

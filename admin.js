@@ -45,16 +45,27 @@ function logout() {
 
 /* ── API helpers ────────────────────────────────────────────── */
 
-async function apiGet(collection) {
+async function apiGet(collection, fallback) {
+    let serverData = [];
     try {
         const res = await fetch(`/api/${collection}`);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        return await res.json();
+        const data = await res.json();
+        if (Array.isArray(data)) {
+            serverData = data;
+        }
     } catch (err) {
         console.error(`apiGet(${collection}):`, err);
         showToast(`Failed to load ${collection}`, 'error');
-        return [];
     }
+    
+    if (fallback) {
+        const defaults = fallback();
+        const existingIds = new Set(serverData.map(item => item.id));
+        const missingDefaults = defaults.filter(item => !existingIds.has(item.id));
+        return [...missingDefaults, ...serverData];
+    }
+    return serverData;
 }
 
 async function apiPost(collection, data) {
@@ -86,8 +97,7 @@ async function apiDelete(collection, id) {
 /* ── Load functions (all fetch from server) ─────────────────── */
 
 async function loadInfluencers() {
-    const data = await apiGet('influencers');
-    influencers = data.length ? data : getDefaultInfluencers();
+    influencers = await apiGet('influencers', getDefaultInfluencers);
 }
 
 async function loadEvents() {
@@ -95,28 +105,23 @@ async function loadEvents() {
 }
 
 async function loadAnnouncements() {
-    const data = await apiGet('announcements');
-    announcements = data.length ? data : getDefaultAnnouncements();
+    announcements = await apiGet('announcements', getDefaultAnnouncements);
 }
 
 async function loadJournals() {
-    const data = await apiGet('journals');
-    journals = data.length ? data : getDefaultJournals();
+    journals = await apiGet('journals', getDefaultJournals);
 }
 
 async function loadFounders() {
-    const data = await apiGet('founders');
-    founders = data.length ? data : getDefaultFounders();
+    founders = await apiGet('founders', getDefaultFounders);
 }
 
 async function loadFaces() {
-    const data = await apiGet('faces');
-    faces = data.length ? data : getDefaultFaces();
+    faces = await apiGet('faces', getDefaultFaces);
 }
 
 async function loadCareers() {
-    const data = await apiGet('careers');
-    careers = data.length ? data : getDefaultCareers();
+    careers = await apiGet('careers', getDefaultCareers);
 }
 
 async function loadData() {
