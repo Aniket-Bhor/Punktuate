@@ -18,7 +18,7 @@
     </div>
     
     <div class="flex min-h-screen relative z-10">
-        <aside id="sidebar" class="w-64 glass border-r border-white/10 p-6 fixed h-full hidden lg:block">
+        <aside id="sidebar" class="w-64 glass border-r border-white/10 p-6 fixed h-full hidden lg:flex flex-col">
             <div class="mb-12">
                 <div class="flex items-center gap-4 mb-8">
                     <img src="17-removebg-preview.png" alt="Punktuate Logo" class="h-10 w-auto">
@@ -29,7 +29,7 @@
                 </div>
             </div>
             
-            <nav class="space-y-3">
+            <nav class="space-y-3 flex-1 overflow-y-auto">
                 <button onclick="showSection('influencers')" class="sidebar-link w-full text-left px-5 py-4 rounded-[20px] flex items-center gap-4 text-white/60 hover:text-white active" id="nav-influencers">
                     <i class="bx bx-user text-xl"></i>
                     <span class="luxury-caption text-[10px] tracking-[0.1em]">Influencers</span>
@@ -60,7 +60,7 @@
                 </button>
             </nav>
             
-            <div class="absolute bottom-6 left-6 right-6">
+            <div class="mt-6 flex-shrink-0">
                 <button onclick="logout()" class="w-full btn-hover bg-white/5 border border-white/10 px-5 py-4 rounded-[20px] flex items-center justify-center gap-3 text-white/60 hover:text-white transition-all">
                     <i class="bx bx-log-out"></i>
                     <span class="luxury-caption text-[10px] tracking-[0.1em]">Logout</span>
@@ -475,6 +475,10 @@
         </div>
     </div>
     
+    <!-- Shared data module (default data & storage keys) -->
+    <script src="js/data.js"></script>
+    <!-- Admin panel logic -->
     <script src="admin.js"></script>
 </body>
+
 </html>

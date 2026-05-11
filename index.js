@@ -650,7 +650,12 @@ function showRazorpayPage() {
         return;
     }
 
-    // Navigate to customer details form instead of payment page
+    const bookingFlow = document.getElementById('booking-flow');
+    if (bookingFlow) {
+        bookingFlow.classList.add('hidden');
+        bookingFlow.style.display = 'none';
+    }
+
     showPage('payment-details');
 }
 

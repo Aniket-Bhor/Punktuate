@@ -22,493 +22,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
-    <style>
-        body { font-family: 'Inter', sans-serif; background-color: #000B3D; color: white; margin: 0; overflow-x: hidden; scroll-behavior: smooth; }
-        
-        .luxury-caption { 
-            font-family: 'Inter', sans-serif; 
-            letter-spacing: 0.4em;
-            text-transform: uppercase;
-            font-weight: 600;
-        }
-
-        .active-tab { color: #D4AF37 !important; position: relative; }
-        .active-tab::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 100%; height: 2px; background: #D4AF37; }
-        
-        .page { display: none; }
-        .page.active { display: block; animation: pageTransition 0.8s cubic-bezier(0.23, 1, 0.32, 1); }
-        
-        @keyframes pageTransition {
-            from { opacity: 0; transform: translateY(30px); filter: blur(10px); }
-            to { opacity: 1; transform: translateY(0); filter: blur(0); }
-        }
-
-        .hover-card {
-            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
-        }
-        
-        .hover-card:hover {
-            transform: translateY(-12px) scale(1.02);
-            background: rgba(255, 255, 255, 0.08);
-            border-color: rgba(212, 175, 55, 0.4);
-            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6);
-        }
-
-        .stat-box {
-            height: 200px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            background: rgba(255, 255, 255, 0.02);
-            border-radius: 30px;
-        }
-
-        .stat-box:hover {
-            transform: translateY(-10px);
-            background: rgba(212, 175, 55, 0.05);
-            border-color: rgba(212, 175, 55, 0.3);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-        }
-
-        .btn-hover {
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        .btn-hover:hover {
-            transform: scale(1.05) translateY(-2px);
-            box-shadow: 0 15px 30px rgba(212, 175, 55, 0.4);
-        }
-
-        .glass {
-            background: rgba(255, 255, 255, 0.02);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .nav-logo { 
-            height: 40px; 
-            width: auto; 
-            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            filter: drop-shadow(0 0-10px rgba(212, 175, 55, 0.2));
-        }
-        .nav-logo:hover {
-            transform: scale(1.15) rotate(-3deg);
-            filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.4));
-        }
-
-        /* Premium Social Icons Styling */
-        .social-link {
-            width: 50px;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-            color: rgba(255, 255, 255, 0.6);
-        }
-        
-        .social-link:hover {
-            background: #D4AF37;
-            border-color: #D4AF37;
-            color: #000B3D;
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(212, 175, 55, 0.3);
-        }
-
-        .social-icon {
-            width: 40px;
-            height: 40px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 12px;
-            transition: all 0.3s ease;
-        }
-        
-        .social-icon i {
-            color: #ffffff;
-            font-size: 20px;
-            transition: all 0.3s ease;
-        }
-
-        .social-icon:hover {
-            background: rgba(139, 92, 246, 0.2);
-        }
-
-        .social-icon:hover i {
-            color: #8b5cf6;
-            transform: scale(1.2);
-        }
-
-        .input-focus {
-            transition: all 0.3s ease;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .input-focus:focus {
-            border-bottom: 1px solid #D4AF37;
-            padding-left: 10px;
-        }
-
-        .line-clamp-2 {
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        /* Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            inset: 0;
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-        .modal-overlay {
-            position: absolute;
-            inset: 0;
-            background: rgba(0, 11, 61, 0.8);
-            backdrop-filter: blur(10px);
-        }
-        .modal-content {
-            position: relative;
-            background: #001254;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 40px;
-            max-width: 700px;
-            width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
-            animation: modalIn 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-        }
-        @keyframes modalIn {
-            from { opacity: 0; transform: scale(0.9) translateY(20px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
-        }
-
-        /* Infinite Loop Slider */
-        @keyframes scroll {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(calc(-320px * 6)); }
-        }
-
-        .slider {
-            width: 100%;
-            overflow: hidden;
-            position: relative;
-            padding: 40px 0;
-        }
-
-        .slide-track {
-            display: flex;
-            width: calc(320px * 12);
-            animation: scroll 20s linear infinite;
-        }
-
-        .slide {
-            width: 320px;
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0 60px;
-        }
-
-        .slide span {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: rgba(255, 255, 255, 0.4);
-            transition: all 0.3s ease;
-            white-space: nowrap;
-        }
-
-        .slide:hover span {
-            color: #D4AF37;
-            transform: scale(1.1);
-        }
-
-        .pulse-btn {
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.4); }
-            70% { box-shadow: 0 0 0 15px rgba(212, 175, 55, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
-        }
-
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #000B3D; }
-        ::-webkit-scrollbar-thumb { background: #D4AF37; border-radius: 10px; }
-
-        /* Easter Egg Styles */
-        .gold-mode {
-            filter: sepia(100%) saturate(300%) hue-rotate(-20deg) brightness(1.2) !important;
-            transition: filter 2s cubic-bezier(0.23, 1, 0.32, 1);
-        }
-
-        .konami-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 11, 61, 0.98);
-            z-index: 10000;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            backdrop-filter: blur(20px);
-        }
-
-        .glitch-text {
-            font-size: 5rem;
-            font-weight: 900;
-            letter-spacing: -0.05em;
-            color: #D4AF37;
-            animation: glitch 1s infinite;
-        }
-
-        @keyframes glitch {
-            0% { transform: translate(0); text-shadow: -2px 0 red, 2px 0 blue; }
-            20% { transform: translate(-2px, 2px); }
-            40% { transform: translate(-2px, -2px); text-shadow: 2px 0 red, -2px 0 blue; }
-            60% { transform: translate(2px, 2px); }
-            80% { transform: translate(2px, -2px); }
-            100% { transform: translate(0); }
-        }
-
-        .animate-fade-in {
-            animation: fadeIn 0.3s ease-out forwards;
-        }
-
-        .animate-slide-up {
-            animation: slideUp 0.5s cubic-bezier(0.23, 1, 0.32, 1) forwards;
-        }
-
-        @keyframes slideUp {
-            from { transform: translate(-50%, 20px); opacity: 0; }
-            to { transform: translate(-50%, 0); opacity: 1; }
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .nav-link-mobile {
-            font-size: 2rem;
-            font-weight: 800;
-            letter-spacing: -0.05em;
-            transition: all 0.3s ease;
-        }
-
-        .portfolio-graphic {
-            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(212, 175, 55, 0.02));
-            border: 1px solid rgba(212, 175, 55, 0.2);
-            border-radius: 20px;
-            padding: 2rem;
-            transition: all 0.4s ease;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .portfolio-graphic:hover {
-            border-color: #D4AF37;
-            background: rgba(212, 175, 55, 0.15);
-            transform: translateY(-5px);
-        }
-
-        .interactive-bar {
-            height: 8px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 4px;
-            overflow: hidden;
-            margin-top: 1rem;
-        }
-
-        .bar-fill {
-            height: 100%;
-            background: #D4AF37;
-            width: 0%;
-            transition: width 1.5s cubic-bezier(0.23, 1, 0.32, 1);
-        }
-
-        /* Click Punctuation Effect */
-        .punktuate-point {
-            position: fixed;
-            width: 8px;
-            height: 8px;
-            background: #D4AF37;
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 9999;
-            animation: punktuateFade 0.8s cubic-bezier(0.23, 1, 0.32, 1) forwards;
-        }
-
-        @keyframes punktuateFade {
-            0% { transform: scale(0); opacity: 1; }
-            100% { transform: scale(4); opacity: 0; }
-        }
-
-        .nav-glass-btn {
-            background: transparent;
-            backdrop-filter: none;
-            -webkit-backdrop-filter: none;
-            border: none;
-            padding: 4px 0;
-            margin: 0 12px;
-            position: relative;
-            transition: all 0.4s ease;
-        }
-        .nav-glass-btn:hover {
-            color: #D4AF37 !important;
-            transform: translateY(-1px);
-        }
-        .nav-glass-btn.active-tab {
-            color: #D4AF37 !important;
-            font-weight: 800;
-        }
-        .nav-glass-btn.active-tab::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            width: 100%;
-            height: 1px;
-            background: #D4AF37;
-            border-radius: 2px;
-        }
-
-        /* Event Page Specific Styles */
-        .event-hero {
-            background: linear-gradient(to bottom, rgba(0, 11, 61, 0.3), #000B3D), url('https://images.unsplash.com/photo-1514525253361-bee8a187499b?auto=format&fit=crop&q=80&w=1920');
-            background-size: cover;
-            background-position: center;
-            height: 80vh;
-        }
-        
-        .artist-img {
-            filter: grayscale(1) contrast(1.2);
-            transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
-        }
-        
-        .artist-img:hover {
-            filter: grayscale(0) contrast(1);
-            transform: scale(1.05);
-        }
-
-        .ticket-card {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-            cursor: pointer;
-            position: relative;
-        }
-
-        .ticket-card:hover {
-            background: rgba(212, 175, 55, 0.05);
-            border-color: rgba(212, 175, 55, 0.3);
-            transform: translateY(-5px);
-        }
-
-        .ticket-card.selected {
-            background: rgba(212, 175, 55, 0.08);
-            border-color: #D4AF37;
-            box-shadow: 0 0 30px rgba(212, 175, 55, 0.2), inset 0 0 20px rgba(212, 175, 55, 0.05);
-            transform: scale(1.02) translateY(-8px);
-        }
-
-        .ticket-card.selected::before {
-            content: '';
-            position: absolute;
-            inset: -2px;
-            border-radius: 42px;
-            padding: 2px;
-            background: linear-gradient(45deg, #D4AF37, transparent, #D4AF37);
-            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor;
-            mask-composite: exclude;
-            animation: borderRotate 4s linear infinite;
-        }
-
-        @keyframes borderRotate {
-            from { filter: hue-rotate(0deg); }
-            to { filter: hue-rotate(360deg); }
-        }
-
-        .event-title-main {
-            line-height: 0.9;
-            letter-spacing: -0.04em;
-        }
-
-        .event-title-sub {
-            display: block;
-            margin-top: 1rem;
-            line-height: 1;
-            letter-spacing: -0.02em;
-            font-weight: 500;
-            font-size: 0.4em;
-        }
-
-        .nav-logo-container {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        @media (max-width: 768px) {
-            .nav-logo { height: 32px; }
-            .event-title-main { font-size: 4rem; }
-            .event-title-sub { font-size: 1.5rem; margin-top: 1rem; }
-        }
-
-        .urgency-badge {
-            background: #ff4d4d;
-            color: white;
-            padding: 4px 12px;
-            border-radius: 100px;
-            font-size: 10px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            animation: pulse-red 2s infinite;
-        }
-
-        @keyframes pulse-red {
-            0% { box-shadow: 0 0 0 0 rgba(255, 77, 77, 0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(255, 77, 77, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(255, 77, 77, 0); }
-        }
-
-        .seat-indicator {
-            height: 6px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 3px;
-            overflow: hidden;
-        }
-
-        .seat-fill {
-            height: 100%;
-            background: #D4AF37;
-            width: 85%; /* Mock availability */
-            transition: width 1.5s ease;
-        }
-    </style>
+    <link rel="stylesheet" href="index.css">
 </head>
 <body class="pt-0">
 
+
     <!-- Notification Banner -->
-    <div id="notification-banner" class="absolute top-0 w-full h-[32px] z-[200] bg-[#D4AF37]/90 text-[#000B3D] flex items-center justify-center gap-3 cursor-pointer transition-all hover:bg-white backdrop-blur-md hidden" onclick="showPage('event-apurva')">
+    <div id="notification-banner" class="fixed top-0 w-full h-[32px] z-[200] bg-[#D4AF37]/90 text-[#000B3D] flex items-center justify-center gap-3 cursor-pointer transition-all hover:bg-white backdrop-blur-md hidden" onclick="showPage('event-apurva')">
         <span class="luxury-caption text-[9px] font-black tracking-[0.15em] animate-pulse">Announcement</span>
         <p class="text-[10px] font-bold uppercase tracking-tight"></p>
         <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
@@ -519,7 +39,7 @@
         <div class="absolute bottom-[-10%] right-[-10%] w-[60vw] h-[60vw] bg-[#D4AF37]/5 blur-[180px] rounded-full"></div>
     </div>
 
-    <nav id="navbar" class="absolute top-[32px] w-full z-[100] transition-all duration-700 px-6 py-5">
+    <nav id="navbar" class="fixed top-[32px] w-full z-[100] transition-all duration-700 px-6 py-5">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
             <div class="cursor-pointer nav-logo-container" onclick="showPage('home')">
                 <img src="17-removebg-preview.png" alt="Punktuate Logo" class="nav-logo h-8 md:h-10 w-auto">
@@ -1627,25 +1147,21 @@
         <!-- APURVA BONDRE LIVE SHOW PAGE -->
         <section id="event-apurva" class="page">
             <!-- Cinematic Hero -->
-            <div class="event-hero relative flex items-end pb-20 px-6">
-                <div class="max-w-7xl mx-auto w-full">
-                    <div class="flex flex-col md:flex-row justify-between items-end gap-12">
-                        <div class="flex-grow">
-                            <span class="urgency-badge mb-6 inline-block">Selling Fast</span>
-                            <h1 class="text-6xl md:text-8xl lg:text-9xl font-black tracking-tighter mb-8 event-title-main">
-                                The <span class="text-[#D4AF37]">Phoolish</span> Concert <span class="text-white/80 event-title-sub">by Apurva Bondre.</span>
-                            </h1>
-                            <div class="flex flex-wrap gap-8 luxury-caption text-[12px] tracking-widest text-white/60">
-                                <div class="flex items-center gap-3"><i data-lucide="calendar" class="w-4 h-4 text-[#D4AF37]"></i> 13th June 2026</div>
-                                <div class="flex items-center gap-3"><i data-lucide="clock" class="w-4 h-4 text-[#D4AF37]"></i> 06:30 PM Onwards</div>
-                                <div class="flex items-center gap-3"><i data-lucide="map-pin" class="w-4 h-4 text-[#D4AF37]"></i> Royal Opera House, Mumbai</div>
-                            </div>
+            <div class="event-hero relative flex items-end pb-20 px-6 mt-32" style="background: linear-gradient(to right, rgba(0, 11, 61, 0.95) 0%, rgba(0, 11, 61, 0.85) 35%, rgba(0, 11, 61, 0.3) 65%, rgba(0, 11, 61, 0) 100%), url('phoolish-concert.png'); background-size: cover; background-position: center;">
+                <div class="max-w-7xl mx-auto w-full relative z-10">
+                    <div class="max-w-4xl">
+                        <span class="urgency-badge mb-6 inline-block">Selling Fast</span>
+                        <h1 class="text-6xl md:text-8xl lg:text-9xl font-black tracking-tighter mb-8 event-title-main">
+                            The <span class="text-[#D4AF37]">Phoolish</span> Concert <span class="text-white/80 event-title-sub">by Apurva Bondre.</span>
+                        </h1>
+                        <div class="flex flex-wrap gap-8 luxury-caption text-[12px] tracking-widest text-white/70 mb-10">
+                            <div class="flex items-center gap-3"><i data-lucide="calendar" class="w-4 h-4 text-[#D4AF37]"></i> 13th June 2026</div>
+                            <div class="flex items-center gap-3"><i data-lucide="clock" class="w-4 h-4 text-[#D4AF37]"></i> 04 PM Onwards</div>
+                            <div class="flex items-center gap-3"><i data-lucide="map-pin" class="w-4 h-4 text-[#D4AF37]"></i> Chaubara, Mumbai</div>
                         </div>
-                        <div class="flex-shrink-0">
-                            <button onclick="scrollToBooking()" class="pulse-btn bg-[#D4AF37] text-[#000B3D] px-10 py-5 rounded-full luxury-caption text-[12px] font-extrabold shadow-2xl flex items-center gap-4 group">
-                                Book Tickets <i data-lucide="ticket" class="w-4 h-4 group-hover:rotate-12 transition-transform"></i>
-                            </button>
-                        </div>
+                        <button onclick="scrollToBooking()" class="pulse-btn bg-[#D4AF37] text-[#000B3D] px-10 py-5 rounded-full luxury-caption text-[12px] font-extrabold shadow-2xl inline-flex items-center gap-4 group">
+                            Book Tickets <i data-lucide="ticket" class="w-4 h-4 group-hover:rotate-12 transition-transform"></i>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -2009,8 +1525,14 @@
 
     <!-- EmailJS CDN -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-    <!-- Main Application Logic -->
-    <script src="payment.js"></script>
-    <script src="index.js"></script>
+    <!-- Razorpay Standard Checkout -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <!-- Modular Application Scripts (load order matters) -->
+    <script src="js/data.js"></script>
+    <script src="js/nav.js"></script>
+    <script src="js/payment.js"></script>
+    <script src="js/email.js"></script>
+    <script src="js/content.js"></script>
+    <script src="js/animations.js"></script>
 </body>
 </html>

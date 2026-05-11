@@ -1,18 +1,19 @@
+/**
+ * admin.js
+ * ─────────────────────────────────────────────────────────────
+ * Admin panel logic: auth, CRUD for all content types, modals.
+ *
+ * NOTE: Default data and STORAGE_KEYS are defined in js/data.js
+ * which is loaded before this file in admin.html.
+ * ─────────────────────────────────────────────────────────────
+ */
+
 const ADMIN_CREDENTIALS = {
     username: 'admin',
     password: 'punktuate123'
 };
+// STORAGE_KEYS is defined in js/data.js — no need to redefine here.
 
-const STORAGE_KEYS = {
-    INFLUENCERS: 'punktuate_influencers',
-    EVENTS: 'punktuate_events',
-    FOUNDERS: 'punktuate_founders',
-    FACES: 'punktuate_faces',
-    CAREERS: 'punktuate_careers',
-    ANNOUNCEMENTS: 'punktuate_announcements',
-    JOURNALS: 'punktuate_journals',
-    SESSION: 'punktuate_admin_session'
-};
 
 let influencers = [];
 let events = [];
@@ -40,249 +41,125 @@ function logout() {
     }, 1000);
 }
 
-function getDefaultInfluencers() {
-    return [
-        {
-            id: '1',
-            name: 'Vartika Vashista',
-            username: 'vartikavashista',
-            followers: '50K',
-            bio: 'Fashion & lifestyle influencer based in Mumbai',
-            link: 'https://instagram.com/vartikavashista',
-            image: 'Influencers/Vartika Vashista/Vartika.jpeg',
-            platform: 'Instagram'
-        },
-        {
-            id: '2',
-            name: 'Aditi Fadtare',
-            username: 'aditifadtare',
-            followers: '35K',
-            bio: 'Content creator & digital marketer',
-            link: 'https://instagram.com/aditifadtare',
-            image: 'Influencers/Aditi Fadtare/Aditi.jpeg',
-            platform: 'Instagram'
-        },
-        {
-            id: '3',
-            name: 'Dhanshri Dake',
-            username: 'dhanshridake',
-            followers: '28K',
-            bio: 'Lifestyle & travel influencer',
-            link: 'https://instagram.com/dhanshridake',
-            image: 'Influencers/Dhanshri Dake/Dhanashri.jpeg',
-            platform: 'Instagram'
-        },
-        {
-            id: '4',
-            name: 'Osbert Dsouza',
-            username: 'osbertdsouza',
-            followers: '42K',
-            bio: 'Fitness & wellness content creator',
-            link: 'https://instagram.com/osbertdsouza',
-            image: 'Influencers/Osbert Dsouza/Osbert.jpeg',
-            platform: 'Instagram'
-        },
-        {
-            id: '5',
-            name: 'Shruti Dange',
-            username: 'shrutidange',
-            followers: '38K',
-            bio: 'Beauty & fashion influencer',
-            link: 'https://instagram.com/shrutidange',
-            image: 'Influencers/Shruti Dange/Shruti Dange.jpeg',
-            platform: 'Instagram'
+// ── getDefault*() functions removed — sourced from js/data.js ──
+
+/* ── API helpers ────────────────────────────────────────────── */
+
+async function apiGet(collection) {
+    try {
+        const res = await fetch(`/api/${collection}`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return await res.json();
+    } catch (err) {
+        console.error(`apiGet(${collection}):`, err);
+        showToast(`Failed to load ${collection}`, 'error');
+        return [];
+    }
+}
+
+async function apiPost(collection, data) {
+    const res = await fetch(`/api/${collection}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return res.json();
+}
+
+async function apiPut(collection, id, data) {
+    const res = await fetch(`/api/${collection}/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return res.json();
+}
+
+async function apiDelete(collection, id) {
+    const res = await fetch(`/api/${collection}/${id}`, { method: 'DELETE' });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return res.json();
+}
+
+/* ── Load functions (all fetch from server) ─────────────────── */
+
+async function loadInfluencers() {
+    const data = await apiGet('influencers');
+    influencers = data.length ? data : getDefaultInfluencers();
+}
+
+async function loadEvents() {
+    events = await apiGet('events');
+}
+
+async function loadAnnouncements() {
+    const data = await apiGet('announcements');
+    announcements = data.length ? data : getDefaultAnnouncements();
+}
+
+async function loadJournals() {
+    const data = await apiGet('journals');
+    journals = data.length ? data : getDefaultJournals();
+}
+
+async function loadFounders() {
+    const data = await apiGet('founders');
+    founders = data.length ? data : getDefaultFounders();
+}
+
+async function loadFaces() {
+    const data = await apiGet('faces');
+    faces = data.length ? data : getDefaultFaces();
+}
+
+async function loadCareers() {
+    const data = await apiGet('careers');
+    careers = data.length ? data : getDefaultCareers();
+}
+
+async function loadData() {
+    await Promise.all([
+        loadInfluencers(),
+        loadEvents(),
+        loadFounders(),
+        loadFaces(),
+        loadCareers(),
+        loadAnnouncements(),
+        loadJournals(),
+    ]);
+}
+
+/* ── Save helpers (upsert via server API) ───────────────────── */
+
+async function saveItem(collection, data, localArray, renderFn) {
+    try {
+        if (data.id && localArray.some(i => i.id === data.id)) {
+            await apiPut(collection, data.id, data);
+        } else {
+            const created = await apiPost(collection, data);
+            data.id = created.id || data.id;
         }
-    ];
-}
-
-function getDefaultAnnouncements() {
-    return [
-        {
-            id: '1',
-            text: 'The Phoolish Concert by Apurva Bondre – 13th June, Mumbai'
-        }
-    ];
-}
-
-function getDefaultJournals() {
-    return [
-        {
-            id: '1',
-            title: 'Why Most Influencer Campaigns Fail.',
-            readTime: '3 min read',
-            description: '(And how we fix broken execution)',
-            link: 'influencer-campaigns-fail.html',
-            image: ''
-        },
-        {
-            id: '2',
-            title: 'Creators Don’t Miss Deadlines. Systems Do.',
-            readTime: '4 min read',
-            description: '',
-            link: 'systems-not-creators.html',
-            image: ''
-        }
-    ];
-}
-
-function getDefaultFounders() {
-    return [
-        {
-            id: '1',
-            name: 'Arya Pawar',
-            title: 'Co-Founder, Punktuate',
-            image: 'aryapic.png'
-        },
-        {
-            id: '2',
-            name: 'Avanti Thakur',
-            title: 'Co-Founder, Punktuate',
-            image: '_ASH7503.jpeg'
-        }
-    ];
-}
-
-function getDefaultFaces() {
-    return [];
-}
-
-function getDefaultCareers() {
-    return [
-        {
-            id: '1',
-            position: 'Graphic Designer',
-            email: 'aryapawar@punktuate.in'
-        },
-        {
-            id: '2',
-            position: 'Video Editor',
-            email: 'aryapawar@punktuate.in'
-        }
-    ];
-}
-
-function loadInfluencers() {
-    const stored = localStorage.getItem(STORAGE_KEYS.INFLUENCERS);
-    const defaultInfluencers = getDefaultInfluencers();
-    
-    if (stored) {
-        influencers = JSON.parse(stored);
-        if (influencers.length < 5) {
-            influencers = defaultInfluencers;
-            saveInfluencers();
-        }
-    } else {
-        influencers = defaultInfluencers;
-        saveInfluencers();
+    } catch (err) {
+        console.error(`saveItem(${collection}):`, err);
+        showToast(`Failed to save to ${collection}`, 'error');
     }
 }
 
-function loadEvents() {
-    const stored = localStorage.getItem(STORAGE_KEYS.EVENTS);
-    if (stored) {
-        events = JSON.parse(stored);
-    } else {
-        events = [];
-        saveEvents();
+async function deleteItem(collection, id, localArray, renderFn) {
+    if (!confirm(`Delete this item from ${collection}?`)) return;
+    try {
+        await apiDelete(collection, id);
+        // Remove from local array and re-render
+        const idx = localArray.findIndex(i => i.id === id || i._fbKey === id);
+        if (idx !== -1) localArray.splice(idx, 1);
+        renderFn();
+        showToast('Deleted successfully!', 'success');
+    } catch (err) {
+        console.error(`deleteItem(${collection}, ${id}):`, err);
+        showToast('Failed to delete item', 'error');
     }
-}
-
-function loadAnnouncements() {
-    const stored = localStorage.getItem(STORAGE_KEYS.ANNOUNCEMENTS);
-    const defaultAnnouncements = getDefaultAnnouncements();
-    
-    if (stored) {
-        announcements = JSON.parse(stored);
-    } else {
-        announcements = defaultAnnouncements;
-        saveAnnouncements();
-    }
-}
-
-function loadJournals() {
-    const stored = localStorage.getItem(STORAGE_KEYS.JOURNALS);
-    const defaultJournals = getDefaultJournals();
-    
-    if (stored) {
-        journals = JSON.parse(stored);
-    } else {
-        journals = defaultJournals;
-        saveJournals();
-    }
-}
-
-function loadFounders() {
-    const stored = localStorage.getItem(STORAGE_KEYS.FOUNDERS);
-    const defaultFounders = getDefaultFounders();
-    
-    if (stored) {
-        founders = JSON.parse(stored);
-    } else {
-        founders = defaultFounders;
-        saveFounders();
-    }
-}
-
-function loadData() {
-    loadInfluencers();
-    loadEvents();
-    loadFounders();
-    loadFaces();
-    loadCareers();
-    loadAnnouncements();
-    loadJournals();
-}
-
-function loadCareers() {
-    const stored = localStorage.getItem(STORAGE_KEYS.CAREERS);
-    const defaultCareers = getDefaultCareers();
-    
-    if (stored) {
-        careers = JSON.parse(stored);
-    } else {
-        careers = defaultCareers;
-        saveCareers();
-    }
-}
-
-function saveCareers() {
-    localStorage.setItem(STORAGE_KEYS.CAREERS, JSON.stringify(careers));
-}
-
-function loadFaces() {
-    const stored = localStorage.getItem(STORAGE_KEYS.FACES);
-    const defaultFaces = getDefaultFaces();
-    
-    if (stored) {
-        faces = JSON.parse(stored);
-    } else {
-        faces = defaultFaces;
-        saveFaces();
-    }
-}
-
-function saveInfluencers() {
-    localStorage.setItem(STORAGE_KEYS.INFLUENCERS, JSON.stringify(influencers));
-}
-
-function saveEvents() {
-    localStorage.setItem(STORAGE_KEYS.EVENTS, JSON.stringify(events));
-}
-
-function saveFounders() {
-    localStorage.setItem(STORAGE_KEYS.FOUNDERS, JSON.stringify(founders));
-}
-
-function saveFaces() {
-    localStorage.setItem(STORAGE_KEYS.FACES, JSON.stringify(faces));
-}
-
-function saveAnnouncements() {
-    localStorage.setItem(STORAGE_KEYS.ANNOUNCEMENTS, JSON.stringify(announcements));
-}
-
-function saveJournals() {
-    localStorage.setItem(STORAGE_KEYS.JOURNALS, JSON.stringify(journals));
 }
 
 function renderInfluencers() {
@@ -612,31 +489,46 @@ function renderAll() {
 
 function showSection(section) {
     currentSection = section;
-    
-    document.querySelectorAll('section').forEach(el => el.classList.add('hidden'));
+
+    // Only hide/show the main content sections (not modal overlays which are also <section> tags)
+    const contentSections = ['influencers', 'events', 'founders', 'faces', 'careers', 'announcements', 'journals'];
+    contentSections.forEach(s => {
+        const el = document.getElementById(`${s}-section`);
+        if (el) el.classList.add('hidden');
+    });
+
     const sectionEl = document.getElementById(`${section}-section`);
     if (sectionEl) sectionEl.classList.remove('hidden');
-    
+
     document.querySelectorAll('.sidebar-link').forEach(el => el.classList.remove('active'));
     document.getElementById(`nav-${section}`)?.classList.add('active');
     document.getElementById(`nav-mobile-${section}`)?.classList.add('active');
-    
+
     const titles = {
-        influencers: { title: 'Influencers', subtitle: 'manage your creators', btn: 'Add Influencer', action: 'add-influencer' },
-        events: { title: 'Events', subtitle: 'manage your events', btn: 'Add Event', action: 'add-event' },
-        founders: { title: 'Founders', subtitle: 'manage your founders', btn: 'Add Founder', action: 'add-founder' },
-        faces: { title: 'The Faces', subtitle: 'the faces behind punktuate', btn: 'Add Face', action: 'add-face' },
-        careers: { title: 'Careers', subtitle: 'manage your job posts', btn: 'Add Career', action: 'add-career' },
-        announcements: { title: 'Announcements', subtitle: 'manage your announcements', btn: 'Add Announcement', action: 'add-announcement' },
-        journals: { title: 'The Journal', subtitle: 'manage your journal', btn: 'Add Journal', action: 'add-journal' }
+        influencers:   { title: 'Influencers',    subtitle: 'manage your creators',       btn: 'Add Influencer',   action: 'add-influencer' },
+        events:        { title: 'Events',          subtitle: 'manage your events',          btn: 'Add Event',        action: 'add-event' },
+        founders:      { title: 'Founders',        subtitle: 'manage your founders',        btn: 'Add Founder',      action: 'add-founder' },
+        faces:         { title: 'The Faces',       subtitle: 'the faces behind punktuate', btn: 'Add Face',         action: 'add-face' },
+        careers:       { title: 'Careers',         subtitle: 'manage your job posts',       btn: 'Add Career',       action: 'add-career' },
+        announcements: { title: 'Announcements',   subtitle: 'manage your announcements',   btn: 'Add Announcement', action: 'add-announcement' },
+        journals:      { title: 'The Journal',     subtitle: 'manage your journal',         btn: 'Add Journal',      action: 'add-journal' },
     };
-    
+
     const config = titles[section];
-    document.getElementById('section-title').textContent = config.title;
-    document.getElementById('section-subtitle').textContent = config.subtitle;
-    document.getElementById('add-btn').innerHTML = `<i class="bx bx-plus"></i> ${config.btn}`;
-    document.getElementById('add-btn').onclick = () => openModal(config.action);
+    if (!config) return;
+
+    const titleEl    = document.getElementById('section-title');
+    const subtitleEl = document.getElementById('section-subtitle');
+    const addBtn     = document.getElementById('add-btn');
+
+    if (titleEl)    titleEl.textContent    = config.title;
+    if (subtitleEl) subtitleEl.textContent = config.subtitle;
+    if (addBtn) {
+        addBtn.innerHTML = `<i class="bx bx-plus"></i> ${config.btn}`;
+        addBtn.onclick   = () => openModal(config.action);
+    }
 }
+
 
 function toggleMobileMenu() {
     const menu = document.getElementById('mobileMenu');
@@ -726,13 +618,8 @@ function editInfluencer(id) {
     openModal('edit-influencer');
 }
 
-function deleteInfluencer(id) {
-    if (confirm('Are you sure you want to delete this influencer?')) {
-        influencers = influencers.filter(i => i.id !== id);
-        saveInfluencers();
-        renderInfluencers();
-        showToast('Influencer deleted successfully!', 'success');
-    }
+async function deleteInfluencer(id) {
+    await deleteItem('influencers', id, influencers, renderInfluencers);
 }
 
 function editEvent(id) {
@@ -749,13 +636,8 @@ function editEvent(id) {
     openModal('edit-event');
 }
 
-function deleteEvent(id) {
-    if (confirm('Are you sure you want to delete this event?')) {
-        events = events.filter(e => e.id !== id);
-        saveEvents();
-        renderEvents();
-        showToast('Event deleted successfully!', 'success');
-    }
+async function deleteEvent(id) {
+    await deleteItem('events', id, events, renderEvents);
 }
 
 function editAnnouncement(id) {
@@ -768,13 +650,8 @@ function editAnnouncement(id) {
     openModal('edit-announcement');
 }
 
-function deleteAnnouncement(id) {
-    if (confirm('Are you sure you want to delete this announcement?')) {
-        announcements = announcements.filter(a => a.id !== id);
-        saveAnnouncements();
-        renderAnnouncements();
-        showToast('Announcement deleted successfully!', 'success');
-    }
+async function deleteAnnouncement(id) {
+    await deleteItem('announcements', id, announcements, renderAnnouncements);
 }
 
 function editJournal(id) {
@@ -790,13 +667,8 @@ function editJournal(id) {
     openModal('edit-journal');
 }
 
-function deleteJournal(id) {
-    if (confirm('Are you sure you want to delete this journal?')) {
-        journals = journals.filter(j => j.id !== id);
-        saveJournals();
-        renderJournals();
-        showToast('Journal deleted successfully!', 'success');
-    }
+async function deleteJournal(id) {
+    await deleteItem('journals', id, journals, renderJournals);
 }
 
 function editFounder(id) {
@@ -810,13 +682,8 @@ function editFounder(id) {
     openModal('edit-founder');
 }
 
-function deleteFounder(id) {
-    if (confirm('Are you sure you want to delete this founder?')) {
-        founders = founders.filter(f => f.id !== id);
-        saveFounders();
-        renderFounders();
-        showToast('Founder deleted successfully!', 'success');
-    }
+async function deleteFounder(id) {
+    await deleteItem('founders', id, founders, renderFounders);
 }
 
 function editFace(id) {
@@ -830,13 +697,8 @@ function editFace(id) {
     openModal('edit-face');
 }
 
-function deleteFace(id) {
-    if (confirm('Are you sure you want to delete this face?')) {
-        faces = faces.filter(f => f.id !== id);
-        saveFaces();
-        renderFaces();
-        showToast('Face deleted successfully!', 'success');
-    }
+async function deleteFace(id) {
+    await deleteItem('faces', id, faces, renderFaces);
 }
 
 function editCareer(id) {
@@ -850,13 +712,8 @@ function editCareer(id) {
     openModal('edit-career');
 }
 
-function deleteCareer(id) {
-    if (confirm('Are you sure you want to delete this career?')) {
-        careers = careers.filter(c => c.id !== id);
-        saveCareers();
-        renderCareers();
-        showToast('Career deleted successfully!', 'success');
-    }
+async function deleteCareer(id) {
+    await deleteItem('careers', id, careers, renderCareers);
 }
 
 function showToast(message, type = 'success') {
@@ -878,12 +735,12 @@ function showToast(message, type = 'success') {
 function initForms() {
     const influencerForm = document.getElementById('influencer-form');
     if (influencerForm) {
-        influencerForm.addEventListener('submit', (e) => {
+        influencerForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const id = document.getElementById('influencer-id').value;
             let newImage = '';
             
-            const finalize = () => {
+            const finalize = async () => {
                 const data = {
                     id: id || generateId(),
                     name: document.getElementById('influencer-name').value,
@@ -895,16 +752,18 @@ function initForms() {
                     platform: 'Instagram'
                 };
                 
-                if (id) {
-                    const idx = influencers.findIndex(i => i.id === id);
-                    if (idx !== -1) influencers[idx] = data;
-                    showToast('Influencer updated successfully!', 'success');
-                } else {
-                    influencers.push(data);
-                    showToast('Influencer saved successfully!', 'success');
-                }
-                
-                saveInfluencers();
+                try {
+                    if (id) {
+                        await apiPut('influencers', id, data);
+                        const idx = influencers.findIndex(i => i.id === id);
+                        if (idx !== -1) influencers[idx] = data;
+                        showToast('Influencer updated!', 'success');
+                    } else {
+                        const created = await apiPost('influencers', data);
+                        influencers.push(created);
+                        showToast('Influencer added!', 'success');
+                    }
+                } catch (err) { showToast('Save failed: ' + err.message, 'error'); return; }
                 renderInfluencers();
                 closeModal();
             };
@@ -943,12 +802,12 @@ function initForms() {
     
     const eventForm = document.getElementById('event-form');
     if (eventForm) {
-        eventForm.addEventListener('submit', (e) => {
+        eventForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const id = document.getElementById('event-id').value;
             let newImage = '';
             
-            const finalize = () => {
+            const finalize = async () => {
                 const data = {
                     id: id || generateId(),
                     name: document.getElementById('event-name').value,
@@ -959,16 +818,18 @@ function initForms() {
                     image: newImage || (id ? events.find(e => e.id === id)?.image : '')
                 };
                 
-                if (id) {
-                    const idx = events.findIndex(e => e.id === id);
-                    if (idx !== -1) events[idx] = data;
-                    showToast('Event updated successfully!', 'success');
-                } else {
-                    events.push(data);
-                    showToast('Event saved successfully!', 'success');
-                }
-                
-                saveEvents();
+                try {
+                    if (id) {
+                        await apiPut('events', id, data);
+                        const idx = events.findIndex(e => e.id === id);
+                        if (idx !== -1) events[idx] = data;
+                        showToast('Event updated!', 'success');
+                    } else {
+                        const created = await apiPost('events', data);
+                        events.push(created);
+                        showToast('Event added!', 'success');
+                    }
+                } catch (err) { showToast('Save failed: ' + err.message, 'error'); return; }
                 renderEvents();
                 closeModal();
             };
@@ -987,7 +848,7 @@ function initForms() {
     
     const announcementForm = document.getElementById('announcement-form');
     if (announcementForm) {
-        announcementForm.addEventListener('submit', (e) => {
+        announcementForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const id = document.getElementById('announcement-id').value;
             
@@ -996,16 +857,18 @@ function initForms() {
                 text: document.getElementById('announcement-text').value
             };
             
-            if (id) {
-                const idx = announcements.findIndex(a => a.id === id);
-                if (idx !== -1) announcements[idx] = data;
-                showToast('Announcement updated successfully!', 'success');
-            } else {
-                announcements.push(data);
-                showToast('Announcement saved successfully!', 'success');
-            }
-            
-            saveAnnouncements();
+            try {
+                if (id) {
+                    await apiPut('announcements', id, data);
+                    const idx = announcements.findIndex(a => a.id === id);
+                    if (idx !== -1) announcements[idx] = data;
+                    showToast('Announcement updated!', 'success');
+                } else {
+                    const created = await apiPost('announcements', data);
+                    announcements.push(created);
+                    showToast('Announcement added!', 'success');
+                }
+            } catch (err) { showToast('Save failed: ' + err.message, 'error'); return; }
             renderAnnouncements();
             closeModal();
         });
@@ -1013,12 +876,12 @@ function initForms() {
     
     const journalForm = document.getElementById('journal-form');
     if (journalForm) {
-        journalForm.addEventListener('submit', (e) => {
+        journalForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const id = document.getElementById('journal-id').value;
             let newImage = '';
             
-            const finalize = () => {
+            const finalize = async () => {
                 const data = {
                     id: id || generateId(),
                     title: document.getElementById('journal-title').value,
@@ -1028,16 +891,18 @@ function initForms() {
                     image: newImage || (id ? journals.find(j => j.id === id)?.image : '')
                 };
                 
-                if (id) {
-                    const idx = journals.findIndex(j => j.id === id);
-                    if (idx !== -1) journals[idx] = data;
-                    showToast('Journal updated successfully!', 'success');
-                } else {
-                    journals.push(data);
-                    showToast('Journal saved successfully!', 'success');
-                }
-                
-                saveJournals();
+                try {
+                    if (id) {
+                        await apiPut('journals', id, data);
+                        const idx = journals.findIndex(j => j.id === id);
+                        if (idx !== -1) journals[idx] = data;
+                        showToast('Journal updated!', 'success');
+                    } else {
+                        const created = await apiPost('journals', data);
+                        journals.push(created);
+                        showToast('Journal added!', 'success');
+                    }
+                } catch (err) { showToast('Save failed: ' + err.message, 'error'); return; }
                 renderJournals();
                 closeModal();
             };
@@ -1056,12 +921,12 @@ function initForms() {
     
     const founderForm = document.getElementById('founder-form');
     if (founderForm) {
-        founderForm.addEventListener('submit', (e) => {
+        founderForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const id = document.getElementById('founder-id').value;
             let newImage = '';
             
-            const finalize = () => {
+            const finalize = async () => {
                 const data = {
                     id: id || generateId(),
                     name: document.getElementById('founder-name').value,
@@ -1069,16 +934,18 @@ function initForms() {
                     image: newImage || (id ? founders.find(f => f.id === id)?.image : '')
                 };
                 
-                if (id) {
-                    const idx = founders.findIndex(f => f.id === id);
-                    if (idx !== -1) founders[idx] = data;
-                    showToast('Founder updated successfully!', 'success');
-                } else {
-                    founders.push(data);
-                    showToast('Founder saved successfully!', 'success');
-                }
-                
-                saveFounders();
+                try {
+                    if (id) {
+                        await apiPut('founders', id, data);
+                        const idx = founders.findIndex(f => f.id === id);
+                        if (idx !== -1) founders[idx] = data;
+                        showToast('Founder updated!', 'success');
+                    } else {
+                        const created = await apiPost('founders', data);
+                        founders.push(created);
+                        showToast('Founder added!', 'success');
+                    }
+                } catch (err) { showToast('Save failed: ' + err.message, 'error'); return; }
                 renderFounders();
                 closeModal();
             };
@@ -1097,12 +964,12 @@ function initForms() {
     
     const faceForm = document.getElementById('face-form');
     if (faceForm) {
-        faceForm.addEventListener('submit', (e) => {
+        faceForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const id = document.getElementById('face-id').value;
             let newImage = '';
             
-            const finalize = () => {
+            const finalize = async () => {
                 const data = {
                     id: id || generateId(),
                     name: document.getElementById('face-name').value,
@@ -1110,16 +977,18 @@ function initForms() {
                     image: newImage || (id ? faces.find(f => f.id === id)?.image : '')
                 };
                 
-                if (id) {
-                    const idx = faces.findIndex(f => f.id === id);
-                    if (idx !== -1) faces[idx] = data;
-                    showToast('Face updated successfully!', 'success');
-                } else {
-                    faces.push(data);
-                    showToast('Face saved successfully!', 'success');
-                }
-                
-                saveFaces();
+                try {
+                    if (id) {
+                        await apiPut('faces', id, data);
+                        const idx = faces.findIndex(f => f.id === id);
+                        if (idx !== -1) faces[idx] = data;
+                        showToast('Face updated!', 'success');
+                    } else {
+                        const created = await apiPost('faces', data);
+                        faces.push(created);
+                        showToast('Face added!', 'success');
+                    }
+                } catch (err) { showToast('Save failed: ' + err.message, 'error'); return; }
                 renderFaces();
                 closeModal();
             };
@@ -1138,7 +1007,7 @@ function initForms() {
     
     const careerForm = document.getElementById('career-form');
     if (careerForm) {
-        careerForm.addEventListener('submit', (e) => {
+        careerForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const id = document.getElementById('career-id').value;
             
@@ -1148,31 +1017,27 @@ function initForms() {
                 email: document.getElementById('career-email').value
             };
             
-            if (id) {
-                const idx = careers.findIndex(c => c.id === id);
-                if (idx !== -1) careers[idx] = data;
-                showToast('Career updated successfully!', 'success');
-            } else {
-                careers.push(data);
-                showToast('Career saved successfully!', 'success');
-            }
-            
-            saveCareers();
+            try {
+                if (id) {
+                    await apiPut('careers', id, data);
+                    const idx = careers.findIndex(c => c.id === id);
+                    if (idx !== -1) careers[idx] = data;
+                    showToast('Career updated!', 'success');
+                } else {
+                    const created = await apiPost('careers', data);
+                    careers.push(created);
+                    showToast('Career added!', 'success');
+                }
+            } catch (err) { showToast('Save failed: ' + err.message, 'error'); return; }
             renderCareers();
             closeModal();
         });
     }
 }
 
-function initAdminPanel() {
-    const hasReset = localStorage.getItem('punktuate_admin_reset_done');
-    if (!hasReset) {
-        const defaultInfluencers = getDefaultInfluencers();
-        localStorage.setItem(STORAGE_KEYS.INFLUENCERS, JSON.stringify(defaultInfluencers));
-        localStorage.setItem('punktuate_admin_reset_done', 'true');
-    }
-    
-    loadData();
+async function initAdminPanel() {
+    showToast('Loading data from server...', 'success');
+    await loadData();
     initForms();
     renderAll();
 }

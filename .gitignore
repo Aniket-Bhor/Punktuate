@@ -17,3 +17,6 @@ Thumbs.db
 
 # Bookings (local only)
 bookings.json
+
+# Local server data (JSON files backed by Firebase in production)
+data/
