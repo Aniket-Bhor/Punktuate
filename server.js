@@ -8,7 +8,9 @@
  * ─────────────────────────────────────────────────────────────
  */
 
-require('dotenv').config();
+// Load .env for local dev (silently ignored on Vercel — env vars come from dashboard)
+try { require('dotenv').config(); } catch (_) {}
+
 
 const express   = require('express');
 const path      = require('path');
@@ -287,8 +289,8 @@ app.use((req, res, next) => {
     }
 });
 
-/* ── Start (or Export for Vercel) ────────────────────────────── */
-if (process.env.NODE_ENV !== 'production' || process.env.VERCEL !== '1') {
+/* ── Start (local dev only — Vercel uses module.exports) ─────── */
+if (!process.env.VERCEL) {
     app.listen(PORT, () => {
         console.log(`\n  ✦ PUNKTUATE server`);
         console.log(`  → http://localhost:${PORT}`);
@@ -297,5 +299,5 @@ if (process.env.NODE_ENV !== 'production' || process.env.VERCEL !== '1') {
     });
 }
 
-// Export for serverless environments (like Vercel)
+// Export for Vercel serverless
 module.exports = app;
