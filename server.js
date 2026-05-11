@@ -63,6 +63,7 @@ async function fbRead(collection) {
     const res  = await fetch(`${FB_URL}/${collection}.json`);
     const val  = await res.json();
     if (!val) return [];
+    if (val.error) throw new Error(`Firebase REST error: ${val.error}`);
     return Object.entries(val).map(([key, v]) => ({ _fbKey: key, ...v }));
 }
 
@@ -77,6 +78,7 @@ async function fbPush(collection, data) {
         body: JSON.stringify(data),
     });
     const json = await res.json();
+    if (json.error) throw new Error(`Firebase REST error: ${json.error}`);
     return { _fbKey: json.name, ...data };
 }
 
@@ -85,11 +87,13 @@ async function fbSet(collection, fbKey, data) {
         await db.ref(`${collection}/${fbKey}`).set(data);
         return data;
     }
-    await fetch(`${FB_URL}/${collection}/${fbKey}.json`, {
+    const res = await fetch(`${FB_URL}/${collection}/${fbKey}.json`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
     });
+    const json = await res.json();
+    if (json.error) throw new Error(`Firebase REST error: ${json.error}`);
     return data;
 }
 
@@ -98,7 +102,10 @@ async function fbDelete(collection, fbKey) {
         await db.ref(`${collection}/${fbKey}`).remove();
         return;
     }
-    await fetch(`${FB_URL}/${collection}/${fbKey}.json`, { method: 'DELETE' });
+    const res = await fetch(`${FB_URL}/${collection}/${fbKey}.json`, { method: 'DELETE' });
+    const json = await res.json();
+    if (json && json.error) throw new Error(`Firebase REST error: ${json.error}`);
+    return;
 }
 
 /* ── Middleware ─────────────────────────────────────────────── */
