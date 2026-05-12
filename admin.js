@@ -101,7 +101,7 @@ async function loadInfluencers() {
 }
 
 async function loadEvents() {
-    events = await apiGet('events');
+    events = await apiGet('events', getDefaultEvents);
 }
 
 async function loadAnnouncements() {
