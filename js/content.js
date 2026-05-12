@@ -129,6 +129,49 @@ function renderAnnouncements(announcements) {
     }
 }
 
+/* ── Events ──────────────────────────────────────────────────── */
+
+async function loadEvents() {
+    const events = await fetchCollection('events', getDefaultEvents);
+    renderEvents(events);
+}
+
+function renderEvents(events) {
+    const grid = document.getElementById('events-grid');
+    if (!grid) return;
+    
+    if (events.length === 0) {
+        grid.innerHTML = '<div class="col-span-2 text-center text-white/40">No upcoming events right now.</div>';
+        return;
+    }
+    
+    grid.innerHTML = events.map(evt => {
+        const action = evt.pageId ? `showPage('${evt.pageId}')` : `window.open('${evt.registrationLink || '#'}', '_blank')`;
+        return `
+            <div class="glass p-10 rounded-[60px] border border-white/10 hover-card group cursor-pointer" onclick="${action}">
+                <div class="relative rounded-[40px] overflow-hidden mb-10 h-[400px]">
+                    <img src="${evt.image || 'mountain.jpg'}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="${evt.name}">
+                    ${evt.description ? `<div class="absolute top-6 left-6"><span class="urgency-badge">${evt.description}</span></div>` : ''}
+                </div>
+                <div class="flex justify-between items-end">
+                    <div>
+                        <h3 class="text-4xl font-bold tracking-tighter uppercase mb-4">${evt.name}</h3>
+                        <div class="flex gap-6 luxury-caption text-[10px] text-white/40">
+                            ${evt.date ? `<span class="flex items-center gap-2"><i data-lucide="calendar" class="w-3 h-3 text-[#D4AF37]"></i> ${evt.date}</span>` : ''}
+                            ${evt.location ? `<span class="flex items-center gap-2"><i data-lucide="map-pin" class="w-3 h-3 text-[#D4AF37]"></i> ${evt.location}</span>` : ''}
+                        </div>
+                    </div>
+                    <button class="w-14 h-14 bg-white text-[#000B3D] rounded-full flex items-center justify-center transition-all group-hover:bg-[#D4AF37]">
+                        <i data-lucide="arrow-right" class="w-6 h-6"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+    }).join('');
+    
+    if (window.lucide) lucide.createIcons();
+}
+
 /* ── Journals ────────────────────────────────────────────────── */
 
 async function loadJournals() {
@@ -308,6 +351,7 @@ function animateBars() {
 document.addEventListener('DOMContentLoaded', () => {
     loadInfluencers();
     loadAnnouncements();
+    loadEvents();
     loadJournals();
     loadFounders();
     loadFaces();

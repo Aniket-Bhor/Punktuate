@@ -1041,50 +1041,8 @@
                     <h2 class="text-7xl md:text-9xl font-black tracking-tighter lowercase leading-none">upcoming <br><span class="text-white/20">events.</span></h2>
                 </div>
 
-                <div class="grid md:grid-cols-2 gap-12">
-                    <!-- Event 1: The Phoolish Concert -->
-                    <div class="glass p-10 rounded-[60px] border border-white/10 hover-card group" onclick="showPage('event-apurva')">
-                        <div class="relative rounded-[40px] overflow-hidden mb-10 h-[400px]">
-                            <img src="https://images.unsplash.com/photo-1511735111819-9a3f7709049c?auto=format&fit=crop&q=80&w=1200" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="The Phoolish Concert">
-                            <div class="absolute top-6 left-6">
-                                <span class="urgency-badge">Live Performance</span>
-                            </div>
-                        </div>
-                        <div class="flex justify-between items-end">
-                            <div>
-                                <h3 class="text-4xl font-bold tracking-tighter uppercase mb-4">The Phoolish Concert</h3>
-                                <div class="flex gap-6 luxury-caption text-[10px] text-white/40">
-                                    <span class="flex items-center gap-2"><i data-lucide="calendar" class="w-3 h-3 text-[#D4AF37]"></i> 13th June</span>
-                                    <span class="flex items-center gap-2"><i data-lucide="map-pin" class="w-3 h-3 text-[#D4AF37]"></i> Mumbai</span>
-                                </div>
-                            </div>
-                            <button class="w-14 h-14 bg-white text-[#000B3D] rounded-full flex items-center justify-center transition-all group-hover:bg-[#D4AF37]">
-                                <i data-lucide="arrow-right" class="w-6 h-6"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Event 2: Creators Interval -->
-                    <div class="glass p-10 rounded-[60px] border border-white/10 hover-card group" onclick="showPage('event-creators')">
-                        <div class="relative rounded-[40px] overflow-hidden mb-10 h-[400px]">
-                            <img src="https://images.unsplash.com/photo-1528605248644-14dd04cb11c7?auto=format&fit=crop&q=80&w=1200" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="Creators Interval">
-                            <div class="absolute top-6 left-6">
-                                <span class="bg-[#D4AF37] text-[#000B3D] px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest">In Collaboration</span>
-                            </div>
-                        </div>
-                        <div class="flex justify-between items-end">
-                            <div>
-                                <h3 class="text-4xl font-bold tracking-tighter uppercase mb-4">Creators Interval</h3>
-                                <div class="flex gap-6 luxury-caption text-[10px] text-white/40">
-                                    <span class="flex items-center gap-2"><i data-lucide="coffee" class="w-3 h-3 text-[#D4AF37]"></i> Brunch</span>
-                                    <span class="flex items-center gap-2"><i data-lucide="users" class="w-3 h-3 text-[#D4AF37]"></i> Community</span>
-                                </div>
-                            </div>
-                            <button class="w-14 h-14 bg-white text-[#000B3D] rounded-full flex items-center justify-center transition-all group-hover:bg-[#D4AF37]">
-                                <i data-lucide="arrow-right" class="w-6 h-6"></i>
-                            </button>
-                        </div>
-                    </div>
+                <div id="events-grid" class="grid md:grid-cols-2 gap-12">
+                    <!-- Dynamic events will be injected here by JS -->
                 </div>
             </div>
         </section>
