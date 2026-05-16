@@ -22,10 +22,15 @@ const app  = express();
 const PORT = process.env.PORT || 3000;
 
 /* ── Razorpay client ─────────────────────────────────────────── */
-const razorpay = new Razorpay({
-    key_id:     process.env.RAZORPAY_KEY_ID,
-    key_secret: process.env.RAZORPAY_KEY_SECRET,
-});
+let razorpay;
+if (process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET) {
+    razorpay = new Razorpay({
+        key_id:     process.env.RAZORPAY_KEY_ID,
+        key_secret: process.env.RAZORPAY_KEY_SECRET,
+    });
+} else {
+    console.warn('  ⚠ Razorpay keys missing. Payment initiation will fail.');
+}
 
 /* ── Firebase Realtime Database ──────────────────────────────── */
 // Uses application default credentials when deployed, or falls
@@ -58,6 +63,18 @@ try {
 /* ── Firebase helpers (REST fallback when Admin SDK unavailable) */
 const FB_URL = (process.env.FIREBASE_DATABASE_URL || '').replace(/\/$/, '');
 
+// Wraps fetch with a timeout so Firebase REST calls don't hang forever locally
+async function fetchWithTimeout(url, options = {}, ms = 10000) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), ms);
+    try {
+        const res = await fetch(url, { ...options, signal: controller.signal });
+        return res;
+    } finally {
+        clearTimeout(timer);
+    }
+}
+
 async function fbRead(collection) {
     if (db) {
         const snap = await db.ref(collection).once('value');
@@ -67,7 +84,7 @@ async function fbRead(collection) {
         return Object.entries(val).map(([key, v]) => ({ _fbKey: key, ...v }));
     }
     // Unauthenticated REST (works when Firebase rules allow read)
-    const res  = await fetch(`${FB_URL}/${collection}.json`);
+    const res  = await fetchWithTimeout(`${FB_URL}/${collection}.json`);
     const val  = await res.json();
     if (!val) return [];
     if (val.error) throw new Error(`Firebase REST error: ${val.error}`);
@@ -79,7 +96,7 @@ async function fbPush(collection, data) {
         const ref = await db.ref(collection).push(data);
         return { _fbKey: ref.key, ...data };
     }
-    const res  = await fetch(`${FB_URL}/${collection}.json`, {
+    const res  = await fetchWithTimeout(`${FB_URL}/${collection}.json`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
@@ -94,7 +111,7 @@ async function fbSet(collection, fbKey, data) {
         await db.ref(`${collection}/${fbKey}`).set(data);
         return data;
     }
-    const res = await fetch(`${FB_URL}/${collection}/${fbKey}.json`, {
+    const res = await fetchWithTimeout(`${FB_URL}/${collection}/${fbKey}.json`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
@@ -109,7 +126,7 @@ async function fbDelete(collection, fbKey) {
         await db.ref(`${collection}/${fbKey}`).remove();
         return;
     }
-    const res = await fetch(`${FB_URL}/${collection}/${fbKey}.json`, { method: 'DELETE' });
+    const res = await fetchWithTimeout(`${FB_URL}/${collection}/${fbKey}.json`, { method: 'DELETE' });
     const json = await res.json();
     if (json && json.error) throw new Error(`Firebase REST error: ${json.error}`);
     return;
@@ -158,15 +175,24 @@ COLLECTIONS.forEach(name => {
         }
     });
 
-    // PUT /api/:collection/:id  — update by logical id field
+    // PUT /api/:collection/:id  — update by logical id field (upsert supported)
     app.put(`/api/${name}/:id`, async (req, res) => {
         try {
             const items  = await fbRead(name);
             const item   = items.find(i => i.id === req.params.id || i._fbKey === req.params.id);
-            if (!item) return res.status(404).json({ error: 'Item not found' });
-            const updated = { ...item, ...req.body };
-            await fbSet(name, item._fbKey, updated);
-            res.json(updated);
+            
+            if (item) {
+                const updated = { ...item, ...req.body };
+                await fbSet(name, item._fbKey, updated);
+                res.json(updated);
+            } else {
+                // Item not found in DB — this often happens with hardcoded "default" items.
+                // We perform an "upsert" by creating it now.
+                const data = { ...req.body };
+                if (!data.id) data.id = req.params.id; // ensure logical ID is kept
+                const created = await fbPush(name, data);
+                res.status(201).json(created);
+            }
         } catch (err) {
             console.error(`PUT /api/${name}/${req.params.id}:`, err.message);
             res.status(500).json({ error: 'Failed to update data', detail: err.message });
@@ -178,7 +204,8 @@ COLLECTIONS.forEach(name => {
         try {
             const items = await fbRead(name);
             const item  = items.find(i => i.id === req.params.id || i._fbKey === req.params.id);
-            if (!item) return res.status(404).json({ error: 'Item not found' });
+            // If item not found in Firebase, it's a frontend-only default — treat as already deleted
+            if (!item) return res.json({ success: true, note: 'Item was not in database (default data)' });
             await fbDelete(name, item._fbKey);
             res.json({ success: true });
         } catch (err) {
@@ -198,9 +225,9 @@ COLLECTIONS.forEach(name => {
                     await db.ref(name).push(item);
                 }
             } else {
-                await fetch(`${FB_URL}/${name}.json`, { method: 'DELETE' });
+                await fetchWithTimeout(`${FB_URL}/${name}.json`, { method: 'DELETE' });
                 for (const item of items) {
-                    await fetch(`${FB_URL}/${name}.json`, {
+                    await fetchWithTimeout(`${FB_URL}/${name}.json`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(item),
@@ -225,6 +252,10 @@ app.post('/api/create-order', async (req, res) => {
         }
         if (Number(amount) < 100) {
             return res.status(400).json({ error: 'Minimum amount is 100 paise (₹1)' });
+        }
+
+        if (!razorpay) {
+            return res.status(500).json({ error: 'Razorpay keys are missing in Vercel Environment Variables. Please configure them in the Vercel dashboard.' });
         }
 
         const order = await razorpay.orders.create({
