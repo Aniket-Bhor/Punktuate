@@ -22,6 +22,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <link rel="stylesheet" href="index.css">
 </head>
 <body class="pt-0">
@@ -726,7 +727,11 @@
                 </div>
                 
                 <h2 class="text-7xl font-black tracking-tighter mb-6 lowercase">Booking <span class="text-[#D4AF37]">Confirmed!</span></h2>
-                <p class="text-2xl text-white/50 mb-16 max-w-2xl mx-auto leading-tight">Your tickets for The Phoolish Concert by Apurva Bondre have been secured. Welcome to the experience.</p>
+                <div id="success-message">
+                    <p class="text-white/60 text-lg mb-4">Your booking has been confirmed.</p>
+                    <p class="text-white/60 text-lg mb-4">A confirmation email has been sent successfully.</p>
+                    <p class="text-white/60 text-lg mb-16">Your official event ticket will be delivered within 24 hours.</p>
+                </div>
                 
                 <div class="glass p-12 rounded-[50px] border border-white/10 mb-20 relative overflow-hidden">
                     <div class="absolute top-0 right-0 p-8">
@@ -1169,24 +1174,23 @@
                     <h2 class="text-7xl font-extrabold tracking-tighter lowercase">Ticket <span class="text-white/20">Options.</span></h2>
                 </div>
 
-                <div class="grid md:grid-cols-3 gap-8">
+                <div class="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
                     <!-- Early Bird -->
-                    <div id="tier-early-bird" class="ticket-card p-12 rounded-[40px] flex flex-col scroll-reveal" onclick="selectTicket('early-bird', 299)">
+                    <div id="tier-early-bird" class="ticket-card p-12 rounded-[40px] flex flex-col scroll-reveal">
                         <div class="flex justify-between items-start mb-8">
                             <div>
                                 <h3 class="text-2xl font-bold uppercase mb-2">Early Bird</h3>
-                                <p class="text-white/40 text-sm">Valid till 15th May</p>
-                                <div id="early-bird-timer" class="text-[10px] text-[#D4AF37] font-bold mt-2 luxury-caption"></div>
+                                <div id="early-bird-urgency" class="text-[10px] text-[#D4AF37] font-bold mt-2 luxury-caption">Filling Fast ✨</div>
                             </div>
                             <span class="bg-[#D4AF37]/10 text-[#D4AF37] px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest">Limited Offer</span>
                         </div>
-                        <div class="text-5xl font-black mb-8">₹299</div>
+                        <div class="text-5xl font-black mb-8" id="early-bird-price">₹299</div>
                         <ul class="space-y-4 text-white/60 mb-12 flex-grow">
                             <li class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-[#D4AF37]"></i> General Access</li>
                             <li class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-[#D4AF37]"></i> Opening Night Entry</li>
                         </ul>
                         <div class="space-y-4">
-                            <button id="btn-early-bird" onclick="selectTicket('early-bird', 299)" class="w-full py-5 rounded-full border border-white/20 luxury-caption text-[11px] font-extrabold transition-all select-btn">Select</button>
+                            <button id="btn-early-bird" class="w-full py-5 rounded-full border border-white/20 luxury-caption text-[11px] font-extrabold transition-all select-btn">Select</button>
                             <button id="proceed-btn-early-bird" onclick="showRazorpayPage()" class="w-full py-5 rounded-full bg-[#D4AF37] text-[#000B3D] luxury-caption text-[11px] font-black transition-all proceed-btn hidden shadow-2xl flex items-center justify-center gap-3 group">
                                 Proceed to Payment <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
                             </button>
@@ -1194,46 +1198,24 @@
                     </div>
 
                     <!-- Regular -->
-                    <div id="tier-regular" class="ticket-card p-12 rounded-[40px] flex flex-col scroll-reveal" onclick="selectTicket('regular', 599)">
+                    <div id="tier-regular" class="ticket-card p-12 rounded-[40px] flex flex-col scroll-reveal">
                         <div class="flex justify-between items-start mb-8">
                             <div>
                                 <h3 class="text-2xl font-bold uppercase mb-2">Regular</h3>
                                 <p class="text-white/40 text-sm">Standard entry</p>
                             </div>
                         </div>
-                        <div class="text-5xl font-black mb-8">₹599</div>
+                        <div class="mb-8">
+                            <div class="text-5xl font-black" id="regular-price">₹499</div>
+                            <div class="text-white/40 line-through text-xl mt-2" id="regular-original-price">₹499</div>
+                        </div>
                         <ul class="space-y-4 text-white/60 mb-12 flex-grow">
                             <li class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-[#D4AF37]"></i> General Access</li>
                             <li class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-[#D4AF37]"></i> Standing Zone</li>
-                            <li class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-[#D4AF37]"></i> 1 Drink Voucher</li>
                         </ul>
                         <div class="space-y-4">
-                            <button id="btn-regular" onclick="selectTicket('regular', 599)" class="w-full py-5 rounded-full border border-white/20 luxury-caption text-[11px] font-extrabold transition-all select-btn">Select</button>
+                            <button id="btn-regular" class="w-full py-5 rounded-full border border-white/20 luxury-caption text-[11px] font-extrabold transition-all select-btn">Select</button>
                             <button id="proceed-btn-regular" onclick="showRazorpayPage()" class="w-full py-5 rounded-full bg-[#D4AF37] text-[#000B3D] luxury-caption text-[11px] font-black transition-all proceed-btn hidden shadow-2xl flex items-center justify-center gap-3 group">
-                                Proceed to Payment <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- VIP -->
-                    <div id="tier-vip" class="ticket-card p-12 rounded-[40px] flex flex-col border-[#D4AF37]/20 bg-gradient-to-br from-transparent to-[#D4AF37]/5 scroll-reveal" onclick="selectTicket('vip', 999)">
-                        <div class="flex justify-between items-start mb-8">
-                            <div>
-                                <h3 class="text-2xl font-bold uppercase mb-2">VIP Experience</h3>
-                                <p class="text-white/40 text-sm">Best Experience</p>
-                            </div>
-                            <span class="bg-[#D4AF37] text-[#000B3D] px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest">Recommended</span>
-                        </div>
-                        <div class="text-5xl font-black mb-8">₹999</div>
-                        <p class="text-[#D4AF37] text-[10px] luxury-caption mb-6 font-bold uppercase tracking-wider italic">Upgrade for priority access and a closer experience</p>
-                        <ul class="space-y-4 text-white/60 mb-12 flex-grow">
-                            <li class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-[#D4AF37]"></i> Front Row Seating</li>
-                            <li class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-[#D4AF37]"></i> Meet & Greet Session</li>
-                            <li class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-[#D4AF37]"></i> Premium Lounge Access</li>
-                        </ul>
-                        <div class="space-y-4">
-                            <button id="btn-vip" onclick="selectTicket('vip', 999)" class="w-full py-5 rounded-full border border-[#D4AF37]/50 luxury-caption text-[11px] font-extrabold transition-all select-btn">Upgrade Now</button>
-                            <button id="proceed-btn-vip" onclick="showRazorpayPage()" class="w-full py-5 rounded-full bg-[#D4AF37] text-[#000B3D] luxury-caption text-[11px] font-black transition-all proceed-btn hidden shadow-2xl flex items-center justify-center gap-3 group">
                                 Proceed to Payment <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
                             </button>
                         </div>
@@ -1452,28 +1434,7 @@
         </div>
     </section>
 
-    <section id="payment-vip" class="page px-6 py-40">
-        <div class="max-w-3xl mx-auto glass p-16 rounded-[60px] border border-[#D4AF37]/30 backdrop-blur-3xl shadow-2xl text-center">
-            <span class="text-[#D4AF37] luxury-caption text-[14px] mb-8 block font-bold">Secure Checkout</span>
-            <h2 class="text-5xl font-extrabold tracking-tighter mb-4 lowercase">VIP <span class="text-white/20">Experience.</span></h2>
-            <div class="text-6xl font-black text-[#D4AF37] mb-12">₹999</div>
-            <div class="space-y-6 mb-12 text-white/60">
-                <p>Complete your payment to secure your spot at The Phoolish Concert.</p>
-                <div class="h-[1px] bg-white/10 w-full"></div>
-                <div class="flex justify-between text-sm uppercase tracking-widest">
-                    <span>Processing Fee</span>
-                    <span>Included</span>
-                </div>
-            </div>
-            <button onclick="checkout('vip', event)" class="w-full bg-white text-[#000B3D] py-6 rounded-full luxury-caption text-[14px] font-black btn-hover flex items-center justify-center gap-4">
-                Pay Now via Razorpay <i data-lucide="credit-card" class="w-5 h-5"></i>
-            </button>
-            <p class="mt-8 text-white/20 text-[10px] luxury-caption uppercase tracking-widest">Encrypted & Secure</p>
-        </div>
-    </section>
 
-    <!-- EmailJS CDN -->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <!-- Razorpay Standard Checkout -->
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <!-- Modular Application Scripts (load order matters) -->

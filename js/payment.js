@@ -2,7 +2,8 @@
  * js/payment.js
  * ─────────────────────────────────────────────────────────────
  * Ticket selection, Razorpay Standard Checkout (server-side
- * order creation + signature verification), early-bird timer.
+ * order creation + signature verification), Early Bird logic,
+ * and EmailJS integration.
  *
  * NEVER puts RAZORPAY_KEY_SECRET in this file.
  * Key ID is fetched from GET /api/config at startup.
@@ -12,14 +13,27 @@
 /* ── Razorpay Key ID (fetched from server, never hardcoded) ─── */
 let RAZORPAY_KEY_ID = '';
 
+/* ── EmailJS Configuration ────────────────────────────────────── */
+const EMAILJS_SERVICE_ID = 'service_l78xmfs';
+const EMAILJS_TEMPLATE_ID = 'template_9ohm4wb';
+const EMAILJS_PUBLIC_KEY = '7FfjlSx153cbVbZyr';
+
 async function initPaymentConfig() {
     try {
         const res  = await fetch('/api/config');
         const conf = await res.json();
         RAZORPAY_KEY_ID = conf.razorpayKeyId || '';
+        
+        // Initialize EmailJS
+        if (typeof emailjs !== 'undefined') {
+            emailjs.init(EMAILJS_PUBLIC_KEY);
+        }
     } catch (e) {
         console.warn('Could not fetch /api/config — Razorpay Key ID not set.');
     }
+    
+    // Initialize ticket state
+    await initTicketState();
 }
 
 // Kick off on load
@@ -39,14 +53,107 @@ let customerData = {
     name: '', age: '', phone: '', email: '', city: ''
 };
 
+let earlyBirdState = {
+    count: 0,
+    max: 15,
+    active: true
+};
+
+/* ── Initialize Ticket State ─────────────────────────────────── */
+async function initTicketState() {
+    try {
+        const res = await fetch('/api/early-bird-count');
+        const data = await res.json();
+        earlyBirdState.count = data.count;
+        earlyBirdState.max = data.max;
+        earlyBirdState.active = data.count < data.max;
+        
+        updateTicketUI();
+    } catch (e) {
+        console.warn('Could not fetch early bird count:', e);
+        // Default to active if API fails
+        earlyBirdState.active = true;
+        updateTicketUI();
+    }
+}
+
+/* ── Update Ticket UI ────────────────────────────────────────── */
+function updateTicketUI() {
+    const ebCard = document.getElementById('tier-early-bird');
+    const ebBtn = document.getElementById('btn-early-bird');
+    const ebPrice = document.getElementById('early-bird-price');
+    const ebUrgency = document.getElementById('early-bird-urgency');
+    
+    const regCard = document.getElementById('tier-regular');
+    const regBtn = document.getElementById('btn-regular');
+    const regPrice = document.getElementById('regular-price');
+    const regOriginalPrice = document.getElementById('regular-original-price');
+    
+    if (earlyBirdState.active) {
+        // Early Bird active
+        if (ebCard) {
+            ebCard.classList.remove('opacity-50', 'grayscale', 'pointer-events-none');
+            ebCard.onclick = () => selectTicket('early-bird', 299);
+        }
+        if (ebBtn) {
+            ebBtn.innerText = 'Select';
+            ebBtn.onclick = () => selectTicket('early-bird', 299);
+        }
+        if (ebPrice) ebPrice.innerText = '₹299';
+        if (ebUrgency) {
+            const urgencies = ['Filling Fast ✨', 'Limited Early Bird Access', 'High Demand'];
+            ebUrgency.innerText = urgencies[Math.floor(Math.random() * urgencies.length)];
+        }
+        
+        // Regular disabled
+        if (regCard) {
+            regCard.classList.add('opacity-50', 'grayscale', 'pointer-events-none');
+        }
+        if (regBtn) {
+            regBtn.innerText = 'Select';
+        }
+        if (regPrice) regPrice.innerText = '₹499';
+        if (regOriginalPrice) regOriginalPrice.classList.add('hidden');
+    } else {
+        // Early Bird sold out
+        if (ebCard) {
+            ebCard.classList.add('opacity-50', 'grayscale', 'pointer-events-none');
+            ebCard.onclick = null;
+        }
+        if (ebBtn) {
+            ebBtn.innerText = 'SOLD OUT';
+            ebBtn.onclick = null;
+        }
+        if (ebPrice) ebPrice.innerText = '₹299';
+        if (ebUrgency) ebUrgency.innerText = 'Sold Out';
+        
+        // Regular enabled at discounted price
+        if (regCard) {
+            regCard.classList.remove('opacity-50', 'grayscale', 'pointer-events-none');
+            regCard.onclick = () => selectTicket('regular', 399);
+        }
+        if (regBtn) {
+            regBtn.innerText = 'Select';
+            regBtn.onclick = () => selectTicket('regular', 399);
+        }
+        if (regPrice) regPrice.innerText = '₹399';
+        if (regOriginalPrice) {
+            regOriginalPrice.innerText = '₹499';
+            regOriginalPrice.classList.remove('hidden');
+        }
+    }
+}
+
 /* ── Ticket Selection ────────────────────────────────────────── */
 
 function selectTicket(type, price) {
-    const today     = new Date();
-    const closeDate = new Date('2026-05-15');
-
-    if (type === 'early-bird' && today > closeDate) {
-        alert('Early Bird tickets are closed. Please select Regular or VIP.');
+    // Validate ticket type based on early bird state
+    if (type === 'early-bird' && !earlyBirdState.active) {
+        alert('Early Bird tickets are sold out. Please select Regular.');
+        return;
+    }
+    if (type === 'regular' && earlyBirdState.active) {
+        alert('Early Bird tickets are still available. Regular tickets will be available once Early Bird sells out.');
         return;
     }
 
@@ -57,7 +164,6 @@ function selectTicket(type, price) {
         const proceedBtn = card.querySelector('.proceed-btn');
         if (selectBtn) {
             selectBtn.classList.remove('hidden');
-            selectBtn.innerText = card.id === 'tier-vip' ? 'Upgrade Now' : 'Select';
         }
         if (proceedBtn) proceedBtn.classList.add('hidden');
     });
@@ -229,8 +335,17 @@ async function startPayment() {
 
 /* ── Verify + Confirm ───────────────────────────────────────── */
 
+let processedPaymentIds = new Set();
+
 async function verifyAndConfirm(paymentResponse) {
     try {
+        // Prevent duplicate processing
+        if (processedPaymentIds.has(paymentResponse.razorpay_payment_id)) {
+            console.log('Payment already processed:', paymentResponse.razorpay_payment_id);
+            return;
+        }
+        processedPaymentIds.add(paymentResponse.razorpay_payment_id);
+
         const res = await fetch('/api/verify-payment', {
             method:  'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -255,6 +370,26 @@ async function verifyAndConfirm(paymentResponse) {
             throw new Error(result.error || 'Verification failed');
         }
 
+        // Send confirmation email via EmailJS
+        if (typeof emailjs !== 'undefined') {
+            try {
+                await emailjs.send(
+                    EMAILJS_SERVICE_ID,
+                    EMAILJS_TEMPLATE_ID,
+                    {
+                        name: customerData.name,
+                        email: customerData.email,
+                        ticket_type: ticketSelectionState.name,
+                        amount: ticketSelectionState.price * ticketSelectionState.qty
+                    }
+                );
+                console.log('Email sent successfully');
+            } catch (emailErr) {
+                console.error('EmailJS error:', emailErr);
+                // Don't fail the whole flow if email fails
+            }
+        }
+
         confirmPayment(paymentResponse.razorpay_payment_id);
     } catch (err) {
         console.error('Verification error:', err);
@@ -266,6 +401,16 @@ function confirmPayment(paymentId) {
     const successInfo = document.getElementById('success-ticket-info');
     if (successInfo) {
         successInfo.innerText = `${ticketSelectionState.qty}× ${ticketSelectionState.name}`;
+    }
+
+    // Update success message
+    const successMessage = document.getElementById('success-message');
+    if (successMessage) {
+        successMessage.innerHTML = `
+            <p class="text-white/60 text-lg mb-4">Your booking has been confirmed.</p>
+            <p class="text-white/60 text-lg mb-4">A confirmation email has been sent successfully.</p>
+            <p class="text-white/60 text-lg">Your official event ticket will be delivered within 24 hours.</p>
+        `;
     }
 
     showPage('success-page');
@@ -286,6 +431,9 @@ function confirmPayment(paymentId) {
     const bookingFlow = document.getElementById('booking-flow');
     if (bookingFlow) bookingFlow.classList.add('hidden');
 
+    // Refresh ticket state
+    initTicketState();
+
     if (window.lucide) lucide.createIcons();
 }
 
@@ -293,29 +441,4 @@ function confirmPayment(paymentId) {
 function scrollToBooking() {
     const section = document.getElementById('booking-section');
     if (section) section.scrollIntoView({ behavior: 'smooth' });
-}
-
-/* ── Early-bird Countdown ───────────────────────────────────── */
-function startEarlyBirdCountdown() {
-    const countDownDate = new Date('May 15, 2026 23:59:59').getTime();
-    const timerEl       = document.getElementById('early-bird-timer');
-    if (!timerEl) return;
-
-    const tick = setInterval(() => {
-        const distance = countDownDate - Date.now();
-        if (distance < 0) {
-            clearInterval(tick);
-            timerEl.innerHTML = 'EXPIRED';
-            const ebCard = document.getElementById('tier-early-bird');
-            const ebBtn  = document.getElementById('btn-early-bird');
-            if (ebCard) ebCard.classList.add('opacity-50', 'grayscale', 'pointer-events-none');
-            if (ebBtn)  ebBtn.innerText = 'Early Bird Closed';
-            return;
-        }
-        const d = Math.floor(distance / 86_400_000);
-        const h = Math.floor((distance % 86_400_000) / 3_600_000);
-        const m = Math.floor((distance % 3_600_000) / 60_000);
-        const s = Math.floor((distance % 60_000) / 1_000);
-        timerEl.innerHTML = `${d}d ${h}h ${m}m ${s}s left`;
-    }, 1000);
 }
