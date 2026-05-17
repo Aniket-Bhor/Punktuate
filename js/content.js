@@ -133,7 +133,19 @@ function renderAnnouncements(announcements) {
 
 async function loadEvents() {
     const events = await fetchCollection('events', getDefaultEvents);
-    renderEvents(events);
+    
+    // Ensure correct pageIds for our default events
+    const fixedEvents = events.map(evt => {
+        if (evt.id === 'apurva') {
+            return { ...evt, pageId: 'event-apurva' };
+        }
+        if (evt.id === 'creators') {
+            return { ...evt, pageId: 'event-creators' };
+        }
+        return evt;
+    });
+    
+    renderEvents(fixedEvents);
 }
 
 function renderEvents(events) {
@@ -146,9 +158,25 @@ function renderEvents(events) {
     }
     
     grid.innerHTML = events.map(evt => {
-        const action = evt.pageId ? `showPage('${evt.pageId}')` : `window.open('${evt.registrationLink || '#'}', '_blank')`;
+        // Force correct pageId for our default events
+        let pageId = evt.pageId;
+        if (evt.id === 'apurva') {
+            pageId = 'event-apurva';
+        }
+        if (evt.id === 'creators') {
+            pageId = 'event-creators';
+        }
+        
+        // Determine action: use pageId if available
+        let actionAttr = '';
+        if (pageId) {
+            actionAttr = `onclick="event.preventDefault(); event.stopPropagation(); showPage('${pageId}');"`;
+        } else if (evt.registrationLink) {
+            actionAttr = `onclick="event.preventDefault(); event.stopPropagation(); window.open('${evt.registrationLink}', '_blank');"`;
+        }
+        
         return `
-            <div class="glass p-10 rounded-[60px] border border-white/10 hover-card group cursor-pointer" onclick="${action}">
+            <div class="glass p-10 rounded-[60px] border border-white/10 hover-card group cursor-pointer" ${actionAttr}>
                 <div class="relative rounded-[40px] overflow-hidden mb-10 h-[400px]">
                     <img src="${evt.image || 'mountain.jpg'}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="${evt.name}">
                     ${evt.description ? `<div class="absolute top-6 left-6"><span class="urgency-badge">${evt.description}</span></div>` : ''}
