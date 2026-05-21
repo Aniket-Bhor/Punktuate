@@ -131,6 +131,8 @@ function renderAnnouncements(announcements) {
 
 /* ── Events ──────────────────────────────────────────────────── */
 
+let globalEvents = [];
+
 async function loadEvents() {
     const events = await fetchCollection('events', getDefaultEvents);
     
@@ -145,7 +147,8 @@ async function loadEvents() {
         return evt;
     });
     
-    renderEvents(fixedEvents);
+    globalEvents = fixedEvents;
+    renderEvents(globalEvents);
 }
 
 function renderEvents(events) {
@@ -171,8 +174,8 @@ function renderEvents(events) {
         let actionAttr = '';
         if (pageId) {
             actionAttr = `onclick="event.preventDefault(); event.stopPropagation(); showPage('${pageId}');"`;
-        } else if (evt.registrationLink) {
-            actionAttr = `onclick="event.preventDefault(); event.stopPropagation(); window.open('${evt.registrationLink}', '_blank');"`;
+        } else {
+            actionAttr = `onclick="event.preventDefault(); event.stopPropagation(); openDynamicEvent('${evt.id}');"`;
         }
         
         return `
@@ -198,6 +201,47 @@ function renderEvents(events) {
     }).join('');
     
     if (window.lucide) lucide.createIcons();
+}
+
+function openDynamicEvent(eventId) {
+    const evt = globalEvents.find(e => e.id === eventId || e._fbKey === eventId);
+    if (!evt) return;
+    
+    const titleEl = document.getElementById('dynamic-event-title');
+    if(titleEl) titleEl.innerHTML = evt.name;
+    
+    const titleSmallEl = document.getElementById('dynamic-event-title-small');
+    if(titleSmallEl) titleSmallEl.innerHTML = evt.name;
+    
+    const dateEl = document.getElementById('dynamic-event-date');
+    if(dateEl) dateEl.innerHTML = evt.date || 'TBA';
+    
+    const locEl = document.getElementById('dynamic-event-location');
+    if(locEl) locEl.innerHTML = evt.location || 'TBA';
+    
+    const descEl = document.getElementById('dynamic-event-description');
+    if(descEl) descEl.textContent = evt.description || 'Join us for this amazing event.';
+    
+    const hero = document.getElementById('dynamic-event-hero');
+    if(hero) hero.style.backgroundImage = `url('${evt.image || 'mountain.jpg'}')`;
+    
+    const imgEl = document.getElementById('dynamic-event-image');
+    if(imgEl) imgEl.src = evt.image || 'mountain.jpg';
+    
+    const actionBtn = document.getElementById('dynamic-event-action');
+    if (actionBtn) {
+        if (evt.registrationLink) {
+            actionBtn.onclick = () => window.open(evt.registrationLink, '_blank');
+            actionBtn.style.display = 'inline-flex';
+        } else {
+            actionBtn.style.display = 'none';
+        }
+    }
+    
+    // Show the dynamic page
+    if (typeof showPage === 'function') {
+        showPage('event-dynamic');
+    }
 }
 
 /* ── Journals ────────────────────────────────────────────────── */
