@@ -320,20 +320,9 @@ app.post('/api/verify-payment', async (req, res) => {
     }
 });
 
-/* ── Get Early Bird Booking Count ─────────────────────────────── */
-app.get('/api/early-bird-count', async (req, res) => {
-    try {
-        const bookings = await fbRead('bookings');
-        const earlyBirdCount = bookings.filter(b => b.ticket?.type === 'early-bird').length;
-        res.json({ count: earlyBirdCount, max: 15 });
-    } catch (err) {
-        console.error('GET /api/early-bird-count:', err.message);
-        res.status(500).json({ error: 'Failed to get count', detail: err.message });
-    }
-});
-
 /* ── Expose Razorpay Key ID to frontend ──────────────────────── */
 app.get('/api/config', (req, res) => {
+    res.set('Cache-Control', 'no-store, max-age=0');
     res.json({ razorpayKeyId: process.env.RAZORPAY_KEY_ID });
 });
 
