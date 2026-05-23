@@ -103,7 +103,7 @@ function getDefaultAnnouncements() {
     return [
         {
             id: '1',
-            text: 'The Phoolish Concert by Apurva Bondre – 13th June, Mumbai'
+            text: 'The Phoolish Concert by Apurva Bondre – 12th June, Mumbai'
         }
     ];
 }
