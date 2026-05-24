@@ -26,11 +26,10 @@ function getDefaultEvents() {
         {
             id: 'apurva',
             name: 'The Phoolish Concert',
-            date: '12th June',
+            date: '13th June',
             location: 'Mumbai',
             description: 'Live Performance',
-            image: 'https://images.unsplash.com/photo-1511735111819-9a3f7709049c?auto=format&fit=crop&q=80&w=1200',
-            pageId: 'event-apurva'
+            image: 'https://images.unsplash.com/photo-1511735111819-9a3f7709049c?auto=format&fit=crop&q=80&w=1200'
         },
         {
             id: 'creators',
@@ -103,7 +102,7 @@ function getDefaultAnnouncements() {
     return [
         {
             id: '1',
-            text: 'The Phoolish Concert by Apurva Bondre – 12th June, Mumbai'
+            text: 'The Phoolish Concert by Apurva Bondre – 13th June, Mumbai'
         }
     ];
 }
