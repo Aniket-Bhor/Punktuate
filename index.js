@@ -1034,8 +1034,6 @@ function getDefaultInfluencers() {
 }
 
 function getDefaultAnnouncements() { return []; }
-    ];
-}
 
 function getDefaultJournals() {
     return [
