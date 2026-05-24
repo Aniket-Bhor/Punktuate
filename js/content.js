@@ -247,7 +247,13 @@ function openDynamicEvent(eventId) {
     if(dateEl) dateEl.innerHTML = formatEventDate(evt.date);
     
     const locEl = document.getElementById('dynamic-event-location');
-    if(locEl) locEl.innerHTML = evt.location || 'TBA';
+    if(locEl) {
+        if (evt.locationLink) {
+            locEl.innerHTML = `<a href="${evt.locationLink}" target="_blank" class="hover:text-[#D4AF37] transition-colors underline decoration-white/20 underline-offset-4">${evt.location || 'View Location'}</a>`;
+        } else {
+            locEl.innerHTML = evt.location || 'TBA';
+        }
+    }
     
     const headingEl = document.getElementById('dynamic-event-heading');
     if(headingEl) headingEl.textContent = evt.eventHeading || 'Experience it.';
