@@ -213,6 +213,9 @@ function openDynamicEvent(eventId) {
     const titleSmallEl = document.getElementById('dynamic-event-title-small');
     if(titleSmallEl) titleSmallEl.innerHTML = evt.name;
     
+    const artistBioEl = document.getElementById('dynamic-event-artist-bio');
+    if(artistBioEl) artistBioEl.textContent = evt.artistBio || '';
+    
     const dateEl = document.getElementById('dynamic-event-date');
     if(dateEl) dateEl.innerHTML = evt.date || 'TBA';
     

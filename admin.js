@@ -632,11 +632,16 @@ function editEvent(id) {
     if (!evt) return;
     
     document.getElementById('event-id').value = evt.id;
-    document.getElementById('event-name').value = evt.name;
-    document.getElementById('event-date').value = evt.date;
-    document.getElementById('event-description').value = evt.description;
-    document.getElementById('event-location').value = evt.location;
+    document.getElementById('event-name').value = evt.name || '';
+    document.getElementById('event-date').value = evt.date || '';
+    document.getElementById('event-bio').value = evt.eventBio || '';
+    document.getElementById('artist-bio').value = evt.artistBio || '';
+    document.getElementById('event-description').value = evt.description || '';
+    document.getElementById('event-location').value = evt.location || '';
+    document.getElementById('event-location-link').value = evt.locationLink || '';
     document.getElementById('event-registration-link').value = evt.registrationLink || '';
+    document.getElementById('event-show-capacity').checked = !!evt.showCapacity;
+    document.getElementById('event-capacity').value = evt.capacity || '';
     
     openModal('edit-event');
 }
@@ -817,9 +822,14 @@ function initForms() {
                     id: id || generateId(),
                     name: document.getElementById('event-name').value,
                     date: document.getElementById('event-date').value,
+                    eventBio: document.getElementById('event-bio').value,
+                    artistBio: document.getElementById('artist-bio').value,
                     description: document.getElementById('event-description').value,
                     location: document.getElementById('event-location').value,
+                    locationLink: document.getElementById('event-location-link').value,
                     registrationLink: document.getElementById('event-registration-link').value,
+                    showCapacity: document.getElementById('event-show-capacity').checked,
+                    capacity: document.getElementById('event-capacity').value,
                     image: newImage || (id ? events.find(e => e.id === id)?.image : '')
                 };
                 
