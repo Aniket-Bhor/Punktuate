@@ -42,8 +42,12 @@ async function fetchCollection(collection, fallback) {
         console.warn(`[content] /api/${collection} unreachable:`, err.message);
     }
     
-    // We do NOT merge with fallback here because it causes deleted items 
-    // to reappear (they are absent from serverData, so the old logic would re-add them).
+    if (fallback) {
+        const defaults = fallback();
+        const existingIds = new Set(serverData.map(item => item.id));
+        const missingDefaults = defaults.filter(item => !existingIds.has(item.id));
+        return [...missingDefaults, ...serverData];
+    }
     return serverData;
 }
 

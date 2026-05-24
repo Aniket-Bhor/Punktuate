@@ -59,9 +59,12 @@ async function apiGet(collection, fallback) {
         showToast(`Failed to load ${collection}`, 'error');
     }
     
-    // We do NOT use fallback() here anymore because it causes deleted items 
-    // to reappear (they are absent from serverData, so the old logic would re-add them).
-    // If the database is empty, it should remain empty until the user adds items.
+    if (fallback) {
+        const defaults = fallback();
+        const existingIds = new Set(serverData.map(item => item.id));
+        const missingDefaults = defaults.filter(item => !existingIds.has(item.id));
+        return [...missingDefaults, ...serverData];
+    }
     return serverData;
 }
 
