@@ -138,12 +138,6 @@ async function loadEvents() {
     
     // Ensure correct pageIds for our default events
     const fixedEvents = events.map(evt => {
-        if (evt.id === 'apurva') {
-            return { ...evt, pageId: 'event-apurva' };
-        }
-        if (evt.id === 'creators') {
-            return { ...evt, pageId: 'event-creators' };
-        }
         return evt;
     });
     
@@ -161,14 +155,7 @@ function renderEvents(events) {
     }
     
     grid.innerHTML = events.map(evt => {
-        // Force correct pageId for our default events
         let pageId = evt.pageId;
-        if (evt.id === 'apurva') {
-            pageId = 'event-apurva';
-        }
-        if (evt.id === 'creators') {
-            pageId = 'event-creators';
-        }
         
         // Determine action: use pageId if available
         let actionAttr = '';
@@ -248,11 +235,20 @@ function openDynamicEvent(eventId) {
     if (actionBtn) {
         if (evt.registrationLink) {
             actionBtn.onclick = () => window.open(evt.registrationLink, '_blank');
-            actionBtn.style.display = 'inline-flex';
         } else {
-            actionBtn.style.display = 'none';
+            actionBtn.onclick = () => {
+                const bookingSection = document.getElementById('booking-section');
+                if(bookingSection) {
+                    bookingSection.scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    showPage('services');
+                }
+            };
         }
     }
+
+    const bookingSubtitle = document.getElementById('booking-flow-event-subtitle');
+    if(bookingSubtitle) bookingSubtitle.textContent = `${evt.name} – ${evt.date || 'TBA'}`;
     
     // Show the dynamic page
     if (typeof showPage === 'function') {
