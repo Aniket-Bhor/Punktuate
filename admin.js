@@ -59,12 +59,9 @@ async function apiGet(collection, fallback) {
         showToast(`Failed to load ${collection}`, 'error');
     }
     
-    if (fallback) {
-        const defaults = fallback();
-        const existingIds = new Set(serverData.map(item => item.id));
-        const missingDefaults = defaults.filter(item => !existingIds.has(item.id));
-        return [...missingDefaults, ...serverData];
-    }
+    // We do NOT use fallback() here anymore because it causes deleted items 
+    // to reappear (they are absent from serverData, so the old logic would re-add them).
+    // If the database is empty, it should remain empty until the user adds items.
     return serverData;
 }
 
@@ -599,35 +596,7 @@ function handleImageUpload(inputId, callback) {
     const input = document.getElementById(inputId);
     if (input && input.files && input.files[0]) {
         const reader = new FileReader();
-        reader.onload = (e) => {
-            const img = new Image();
-            img.onload = () => {
-                const canvas = document.createElement('canvas');
-                let width = img.width;
-                let height = img.height;
-                const max_dim = 1200;
-                
-                if (width > height) {
-                    if (width > max_dim) {
-                        height = Math.round(height * max_dim / width);
-                        width = max_dim;
-                    }
-                } else {
-                    if (height > max_dim) {
-                        width = Math.round(width * max_dim / height);
-                        height = max_dim;
-                    }
-                }
-                
-                canvas.width = width;
-                canvas.height = height;
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(img, 0, 0, width, height);
-                const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
-                callback(dataUrl);
-            };
-            img.src = e.target.result;
-        };
+        reader.onload = (e) => callback(e.target.result);
         reader.readAsDataURL(input.files[0]);
     }
 }
@@ -660,18 +629,11 @@ function editEvent(id) {
     if (!evt) return;
     
     document.getElementById('event-id').value = evt.id;
-    document.getElementById('event-name').value = evt.name || '';
-    document.getElementById('event-date').value = evt.date || '';
-    document.getElementById('event-heading').value = evt.eventHeading || '';
-    document.getElementById('event-bio').value = evt.eventBio || '';
-    document.getElementById('artist-bio').value = evt.artistBio || '';
-    document.getElementById('artist-instagram').value = evt.artistInstagram || '';
-    document.getElementById('event-description').value = evt.description || '';
-    document.getElementById('event-location').value = evt.location || '';
-    document.getElementById('event-location-link').value = evt.locationLink || '';
+    document.getElementById('event-name').value = evt.name;
+    document.getElementById('event-date').value = evt.date;
+    document.getElementById('event-description').value = evt.description;
+    document.getElementById('event-location').value = evt.location;
     document.getElementById('event-registration-link').value = evt.registrationLink || '';
-    document.getElementById('event-show-capacity').checked = !!evt.showCapacity;
-    document.getElementById('event-capacity').value = evt.capacity || '';
     
     openModal('edit-event');
 }
@@ -852,16 +814,9 @@ function initForms() {
                     id: id || generateId(),
                     name: document.getElementById('event-name').value,
                     date: document.getElementById('event-date').value,
-                    eventHeading: document.getElementById('event-heading').value,
-                    eventBio: document.getElementById('event-bio').value,
-                    artistBio: document.getElementById('artist-bio').value,
-                    artistInstagram: document.getElementById('artist-instagram').value,
                     description: document.getElementById('event-description').value,
                     location: document.getElementById('event-location').value,
-                    locationLink: document.getElementById('event-location-link').value,
                     registrationLink: document.getElementById('event-registration-link').value,
-                    showCapacity: document.getElementById('event-show-capacity').checked,
-                    capacity: document.getElementById('event-capacity').value,
                     image: newImage || (id ? events.find(e => e.id === id)?.image : '')
                 };
                 

@@ -7,36 +7,6 @@
  * ─────────────────────────────────────────────────────────────
  */
 
-/* ── Date formatting helper ──────────────────────────────────── */
-function formatEventDate(dateString) {
-    if (!dateString) return 'TBA';
-    // dateString from datetime-local is usually "YYYY-MM-DDTHH:mm"
-    try {
-        const dateObj = new Date(dateString);
-        if (isNaN(dateObj.getTime())) return dateString; // fallback
-        
-        const day = dateObj.getDate();
-        const suffix = (day % 10 === 1 && day !== 11) ? 'st' :
-                       (day % 10 === 2 && day !== 12) ? 'nd' :
-                       (day % 10 === 3 && day !== 13) ? 'rd' : 'th';
-        
-        const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-        const month = monthNames[dateObj.getMonth()];
-        const year = dateObj.getFullYear();
-        
-        let hours = dateObj.getHours();
-        const minutes = dateObj.getMinutes().toString().padStart(2, '0');
-        const ampm = hours >= 12 ? 'PM' : 'AM';
-        hours = hours % 12;
-        hours = hours ? hours : 12; // the hour '0' should be '12'
-        const paddedHours = hours.toString().padStart(2, '0');
-        
-        return `${day}${suffix} ${month} ${year} | ${paddedHours}:${minutes} ${ampm}`;
-    } catch (e) {
-        return dateString;
-    }
-}
-
 /* ── Shared IntersectionObserver for scroll-reveal ─────────── */
 const scrollObserver = new IntersectionObserver(
     entries => {
@@ -72,13 +42,8 @@ async function fetchCollection(collection, fallback) {
         console.warn(`[content] /api/${collection} unreachable:`, err.message);
     }
     
-    // Always merge with fallback so defaults are never overridden
-    if (fallback) {
-        const defaults = fallback();
-        const existingIds = new Set(serverData.map(item => item.id));
-        const missingDefaults = defaults.filter(item => !existingIds.has(item.id));
-        return [...missingDefaults, ...serverData];
-    }
+    // We do NOT merge with fallback here because it causes deleted items 
+    // to reappear (they are absent from serverData, so the old logic would re-add them).
     return serverData;
 }
 
@@ -166,12 +131,7 @@ let globalEvents = [];
 async function loadEvents() {
     const events = await fetchCollection('events', getDefaultEvents);
     
-    // Ensure correct pageIds for our default events
-    const fixedEvents = events.map(evt => {
-        return evt;
-    });
-    
-    globalEvents = fixedEvents;
+    globalEvents = events;
     renderEvents(globalEvents);
 }
 
@@ -205,7 +165,7 @@ function renderEvents(events) {
                     <div>
                         <h3 class="text-4xl font-bold tracking-tighter uppercase mb-4">${evt.name}</h3>
                         <div class="flex gap-6 luxury-caption text-[10px] text-white/40">
-                            ${evt.date ? `<span class="flex items-center gap-2"><i data-lucide="calendar" class="w-3 h-3 text-[#D4AF37]"></i> ${formatEventDate(evt.date)}</span>` : ''}
+                            ${evt.date ? `<span class="flex items-center gap-2"><i data-lucide="calendar" class="w-3 h-3 text-[#D4AF37]"></i> ${evt.date}</span>` : ''}
                             ${evt.location ? `<span class="flex items-center gap-2"><i data-lucide="map-pin" class="w-3 h-3 text-[#D4AF37]"></i> ${evt.location}</span>` : ''}
                         </div>
                     </div>
@@ -230,36 +190,14 @@ function openDynamicEvent(eventId) {
     const titleSmallEl = document.getElementById('dynamic-event-title-small');
     if(titleSmallEl) titleSmallEl.innerHTML = evt.name;
     
-    const artistBioEl = document.getElementById('dynamic-event-artist-bio');
-    if(artistBioEl) artistBioEl.textContent = evt.artistBio || '';
-    
-    const artistInstaEl = document.getElementById('dynamic-event-artist-instagram');
-    if (artistInstaEl) {
-        if (evt.artistInstagram) {
-            artistInstaEl.href = evt.artistInstagram;
-            artistInstaEl.style.display = 'inline-flex';
-        } else {
-            artistInstaEl.style.display = 'none';
-        }
-    }
-    
     const dateEl = document.getElementById('dynamic-event-date');
-    if(dateEl) dateEl.innerHTML = formatEventDate(evt.date);
+    if(dateEl) dateEl.innerHTML = evt.date || 'TBA';
     
     const locEl = document.getElementById('dynamic-event-location');
-    if(locEl) {
-        if (evt.locationLink) {
-            locEl.innerHTML = `<a href="${evt.locationLink}" target="_blank" class="hover:text-[#D4AF37] transition-colors underline decoration-white/20 underline-offset-4">${evt.location || 'View Location'}</a>`;
-        } else {
-            locEl.innerHTML = evt.location || 'TBA';
-        }
-    }
+    if(locEl) locEl.innerHTML = evt.location || 'TBA';
     
-    const headingEl = document.getElementById('dynamic-event-heading');
-    if(headingEl) headingEl.textContent = evt.eventHeading || 'Experience it.';
-    
-    const bioEl = document.getElementById('dynamic-event-bio');
-    if(bioEl) bioEl.textContent = evt.eventBio || 'Join us for this amazing event.';
+    const descEl = document.getElementById('dynamic-event-description');
+    if(descEl) descEl.textContent = evt.description || 'Join us for this amazing event.';
     
     const hero = document.getElementById('dynamic-event-hero');
     if(hero) hero.style.backgroundImage = `url('${evt.image || 'mountain.jpg'}')`;
@@ -271,24 +209,15 @@ function openDynamicEvent(eventId) {
     if (actionBtn) {
         if (evt.registrationLink) {
             actionBtn.onclick = () => window.open(evt.registrationLink, '_blank');
+            actionBtn.style.display = 'inline-flex';
         } else {
-            actionBtn.onclick = () => {
-                const bookingSection = document.getElementById('booking-section');
-                if(bookingSection) {
-                    bookingSection.scrollIntoView({ behavior: 'smooth' });
-                } else {
-                    showPage('services');
-                }
-            };
+            actionBtn.style.display = 'none';
         }
     }
-
-    const bookingSubtitle = document.getElementById('booking-flow-event-subtitle');
-    if(bookingSubtitle) bookingSubtitle.textContent = `${evt.name} – ${formatEventDate(evt.date)}`;
     
     // Show the dynamic page
     if (typeof showPage === 'function') {
-        showPage('event-dynamic', eventId);
+        showPage('event-dynamic');
     }
 }
 
@@ -468,23 +397,12 @@ function animateBars() {
 }
 
 /* ── Bootstrap ───────────────────────────────────────────────── */
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('DOMContentLoaded', () => {
     loadInfluencers();
     loadAnnouncements();
-    await loadEvents();
+    loadEvents();
     loadJournals();
     loadFounders();
     loadFaces();
     loadCareers();
-
-    const urlParams = new URLSearchParams(window.location.search);
-    const eventId = urlParams.get('event');
-    if (eventId) {
-        openDynamicEvent(eventId);
-    } else {
-        const pageId = urlParams.get('page');
-        if (pageId && typeof showPage === 'function') {
-            showPage(pageId);
-        }
-    }
 });

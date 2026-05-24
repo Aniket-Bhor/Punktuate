@@ -29,7 +29,7 @@
 
 
     <!-- Notification Banner -->
-    <div id="notification-banner" class="fixed top-0 w-full h-[32px] z-[200] bg-[#D4AF37]/90 text-[#000B3D] flex items-center justify-center gap-3 cursor-pointer transition-all hover:bg-white backdrop-blur-md hidden" onclick="openDynamicEvent('apurva')">
+    <div id="notification-banner" class="fixed top-0 w-full h-[32px] z-[200] bg-[#D4AF37]/90 text-[#000B3D] flex items-center justify-center gap-3 cursor-pointer transition-all hover:bg-white backdrop-blur-md hidden" onclick="showPage('home')">
         <span class="luxury-caption text-[9px] font-black tracking-[0.15em] animate-pulse">Announcement</span>
         <p class="text-[10px] font-bold uppercase tracking-tight"></p>
         <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
@@ -589,7 +589,7 @@
                                 <button onclick="confirmPayment()" class="w-full bg-[#D4AF37] text-[#000B3D] py-5 rounded-full luxury-caption text-[11px] font-black hover:bg-white transition-all shadow-2xl flex items-center justify-center gap-4">
                                     I Have Paid <i data-lucide="check-circle" class="w-4 h-4"></i>
                                 </button>
-                                <button onclick="showPage('event-apurva')" class="w-full py-3 text-white/40 text-[10px] luxury-caption uppercase hover:text-white transition-all">Cancel Transaction</button>
+                                <button onclick="showPage('home')" class="w-full py-3 text-white/40 text-[10px] luxury-caption uppercase hover:text-white transition-all">Cancel Transaction</button>
                             </div>
                         </div>
                     </div>
@@ -632,7 +632,7 @@
                             <button onclick="checkout('early-bird')" class="w-full bg-[#D4AF37] text-[#000B3D] py-6 rounded-full luxury-caption text-[11px] font-black hover:bg-white transition-all shadow-2xl flex items-center justify-center gap-4 group">
                                 Pay with Razorpay <i data-lucide="credit-card" class="w-5 h-5 group-hover:scale-110 transition-transform"></i>
                             </button>
-                            <button onclick="showPage('event-apurva')" class="w-full py-3 text-white/40 text-[10px] luxury-caption uppercase hover:text-white transition-all">Cancel & Return</button>
+                            <button onclick="showPage('home')" class="w-full py-3 text-white/40 text-[10px] luxury-caption uppercase hover:text-white transition-all">Cancel & Return</button>
                         </div>
                     </div>
                 </div>
@@ -671,7 +671,7 @@
                             <button onclick="checkout('regular')" class="w-full bg-[#D4AF37] text-[#000B3D] py-6 rounded-full luxury-caption text-[11px] font-black hover:bg-white transition-all shadow-2xl flex items-center justify-center gap-4 group">
                                 Pay with Razorpay <i data-lucide="credit-card" class="w-5 h-5 group-hover:scale-110 transition-transform"></i>
                             </button>
-                            <button onclick="showPage('event-apurva')" class="w-full py-3 text-white/40 text-[10px] luxury-caption uppercase hover:text-white transition-all">Cancel & Return</button>
+                            <button onclick="showPage('home')" class="w-full py-3 text-white/40 text-[10px] luxury-caption uppercase hover:text-white transition-all">Cancel & Return</button>
                         </div>
                     </div>
                 </div>
@@ -710,7 +710,7 @@
                             <button onclick="checkout('vip')" class="w-full bg-[#D4AF37] text-[#000B3D] py-6 rounded-full luxury-caption text-[11px] font-black hover:bg-white transition-all shadow-2xl flex items-center justify-center gap-4 group">
                                 Pay with Razorpay <i data-lucide="credit-card" class="w-5 h-5 group-hover:scale-110 transition-transform"></i>
                             </button>
-                            <button onclick="showPage('event-apurva')" class="w-full py-3 text-white/40 text-[10px] luxury-caption uppercase hover:text-white transition-all">Cancel & Return</button>
+                            <button onclick="showPage('home')" class="w-full py-3 text-white/40 text-[10px] luxury-caption uppercase hover:text-white transition-all">Cancel & Return</button>
                         </div>
                     </div>
                 </div>
@@ -1052,7 +1052,6 @@
             </div>
         </section>
 
-        
 
         <!-- DYNAMIC EVENT PAGE -->
         <section id="event-dynamic" class="page">
@@ -1080,8 +1079,9 @@
                 <div class="grid lg:grid-cols-2 gap-24 items-start">
                     <div class="scroll-reveal">
                         <span class="text-[#D4AF37] luxury-caption text-[14px] mb-8 block font-bold">About the Event</span>
-                        <h2 id="dynamic-event-heading" class="text-5xl font-extrabold tracking-tighter mb-8 lowercase">Experience <span class="text-white/20">it.</span></h2>
-                        <p id="dynamic-event-bio" class="text-xl text-white/50 leading-relaxed mb-12 whitespace-pre-wrap"></p>
+                        <h2 class="text-5xl font-extrabold tracking-tighter mb-8 lowercase">Experience <span class="text-white/20">it.</span></h2>
+                        <p id="dynamic-event-description" class="text-xl text-white/50 leading-relaxed mb-12 whitespace-pre-wrap">
+                        </p>
                     </div>
                     
                     <div class="relative group scroll-reveal">
@@ -1089,118 +1089,15 @@
                         <div class="relative rounded-[40px] overflow-hidden border border-white/10">
                             <img id="dynamic-event-image" src="" alt="Event Image" class="w-full h-auto artist-img">
                             <div class="absolute bottom-0 left-0 w-full p-10 bg-gradient-to-t from-[#000B3D] to-transparent">
-                                <span class="text-[#D4AF37] luxury-caption text-[12px] mb-2 block font-bold">Featured Artist</span>
+                                <span class="text-[#D4AF37] luxury-caption text-[12px] mb-2 block font-bold">Featured Event</span>
                                 <h3 id="dynamic-event-title-small" class="text-4xl font-bold uppercase tracking-tighter"></h3>
-                                <p id="dynamic-event-artist-bio" class="text-white/60 text-sm mt-4 leading-relaxed max-w-md"></p>
-                                <a id="dynamic-event-artist-instagram" href="#" target="_blank" class="mt-6 inline-flex items-center gap-2 text-white/40 hover:text-[#D4AF37] transition-all group" style="display: none;">
-                                    <i class="bx bxl-instagram text-2xl group-hover:scale-110 transition-transform"></i>
-                                    <span class="luxury-caption text-[10px] font-bold uppercase tracking-widest">Follow Artist</span>
-                                </a>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        
-<!-- Ticket Pricing Section -->
-            <div id="booking-section" class="max-w-7xl mx-auto px-6 py-32 border-t border-white/5">
-                <div class="text-center mb-24 scroll-reveal">
-                    <span class="text-[#D4AF37] luxury-caption text-[14px] mb-6 block font-bold">Secure Your Spot</span>
-                    <h2 class="text-7xl font-extrabold tracking-tighter lowercase">Ticket <span class="text-white/20">Options.</span></h2>
-                </div>
+        </section>
 
-                <div class="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-                    <!-- Early Bird -->
-                    <div id="tier-early-bird" class="ticket-card p-12 rounded-[40px] flex flex-col scroll-reveal">
-                        <div class="flex justify-between items-start mb-8">
-                            <div>
-                                <h3 class="text-2xl font-bold uppercase mb-2">Early Bird</h3>
-                                <div id="early-bird-urgency" class="text-[10px] text-[#D4AF37] font-bold mt-2 luxury-caption">Filling Fast ✨</div>
-                            </div>
-                            <span class="bg-[#D4AF37]/10 text-[#D4AF37] px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest">Limited Offer</span>
-                        </div>
-                        <div class="text-5xl font-black mb-8" id="early-bird-price">₹299</div>
-                        <ul class="space-y-4 text-white/60 mb-12 flex-grow">
-                            <li class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-[#D4AF37]"></i> General Access</li>
-                            <li class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-[#D4AF37]"></i> Opening Night Entry</li>
-                        </ul>
-                        <div class="space-y-4">
-                            <button id="btn-early-bird" class="w-full py-5 rounded-full border border-white/20 luxury-caption text-[11px] font-extrabold transition-all select-btn">Select</button>
-                            <button id="proceed-btn-early-bird" onclick="showRazorpayPage()" class="w-full py-5 rounded-full bg-[#D4AF37] text-[#000B3D] luxury-caption text-[11px] font-black transition-all proceed-btn hidden shadow-2xl flex items-center justify-center gap-3 group">
-                                Proceed to Payment <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Regular -->
-                    <div id="tier-regular" class="ticket-card p-12 rounded-[40px] flex flex-col scroll-reveal">
-                        <div class="flex justify-between items-start mb-8">
-                            <div>
-                                <h3 class="text-2xl font-bold uppercase mb-2">Regular</h3>
-                                <p class="text-white/40 text-sm">Standard entry</p>
-                            </div>
-                        </div>
-                        <div class="mb-8">
-                            <div class="text-5xl font-black" id="regular-price">₹499</div>
-                            <div class="text-white/40 line-through text-xl mt-2" id="regular-original-price">₹499</div>
-                        </div>
-                        <ul class="space-y-4 text-white/60 mb-12 flex-grow">
-                            <li class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-[#D4AF37]"></i> General Access</li>
-                            <li class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-[#D4AF37]"></i> Standing Zone</li>
-                        </ul>
-                        <div class="space-y-4">
-                            <button id="btn-regular" class="w-full py-5 rounded-full border border-white/20 luxury-caption text-[11px] font-extrabold transition-all select-btn">Select</button>
-                            <button id="proceed-btn-regular" onclick="showRazorpayPage()" class="w-full py-5 rounded-full bg-[#D4AF37] text-[#000B3D] luxury-caption text-[11px] font-black transition-all proceed-btn hidden shadow-2xl flex items-center justify-center gap-3 group">
-                                Proceed to Payment <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Booking Summary (Hidden initially, floating at bottom) moved to body level -->
-            </div>
-
-            <!-- Sponsor Highlights -->
-            <div class="py-32 border-y border-white/5 glass mb-20">
-                <div class="max-w-7xl mx-auto px-6">
-                    <p class="luxury-caption text-[12px] text-center text-white/40 mb-20 font-bold">Partnerships</p>
-                    <div class="flex flex-wrap justify-center gap-16 md:gap-24 items-center">
-                        <!-- Primary Sponsor -->
-                        <div class="text-center group">
-                            <p class="text-[10px] uppercase tracking-[0.3em] text-white/20 mb-8 font-black group-hover:text-[#D4AF37] transition-all">Presented By</p>
-                            <div class="flex flex-col items-center">
-                                <div class="bg-white/5 p-8 rounded-3xl border border-white/10 group-hover:border-[#D4AF37]/40 transition-all flex items-center justify-center min-w-[200px] h-[120px]">
-                                    <img src="Maestro_LOGO.png" alt="Maestro" class="h-16 w-auto object-contain">
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Education Partner -->
-                        <div class="text-center group">
-                            <p class="text-[10px] uppercase tracking-[0.3em] text-white/20 mb-8 font-black group-hover:text-[#D4AF37] transition-all">Quality Partner</p>
-                            <div class="flex flex-col items-center">
-                                <div class="bg-white/5 p-8 rounded-3xl border border-white/10 group-hover:border-[#D4AF37]/40 transition-all flex items-center justify-center min-w-[200px] h-[120px]">
-                                    <img src="indusqa_LOGO.png" alt="IndusQA" class="h-16 w-auto object-contain filter invert opacity-90 group-hover:opacity-100">
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Promotion Partner -->
-                        <div class="text-center group">
-                            <p class="text-[10px] uppercase tracking-[0.3em] text-white/20 mb-8 font-black group-hover:text-[#D4AF37] transition-all">Brand Partner</p>
-                            <div class="flex flex-col items-center">
-                                <div class="bg-white/5 p-8 rounded-3xl border border-white/10 group-hover:border-[#D4AF37]/40 transition-all flex items-center justify-center min-w-[200px] h-[120px]">
-                                    <img src="Westelle_LOGO.png" alt="Westelle" class="h-16 w-auto object-contain filter invert opacity-90 group-hover:opacity-100">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        
-</section>
-
-        
 
     </div>
 
@@ -1262,7 +1159,7 @@
                 <div class="flex justify-between items-start">
                     <div>
                         <h4 id="selected-ticket-name" class="text-xl md:text-3xl font-bold uppercase mb-1">Regular Ticket</h4>
-                        <p id="booking-flow-event-subtitle" class="text-white/40 luxury-caption text-[8px] md:text-[10px] mb-4">The Phoolish Concert by Apurva Bondre – 12th June</p>
+                        <p class="text-white/40 luxury-caption text-[8px] md:text-[10px] mb-4">The Phoolish Concert by Apurva Bondre – 12th June</p>
                     </div>
                     <button onclick="closeBookingFlow()" class="md:hidden w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-white/40"><i data-lucide="x" class="w-4 h-4"></i></button>
                 </div>
@@ -1326,7 +1223,7 @@
                     <button type="submit" class="w-full bg-[#D4AF37] text-[#000B3D] py-6 rounded-full luxury-caption text-[14px] font-black btn-hover flex items-center justify-center gap-4 shadow-xl shadow-[#D4AF37]/20">
                         Review Payment <i data-lucide="arrow-right" class="w-5 h-5"></i>
                     </button>
-                    <button type="button" onclick="showPage('event-apurva')" class="w-full mt-4 text-white/20 hover:text-white/60 text-[10px] luxury-caption uppercase transition-all">Go Back</button>
+                    <button type="button" onclick="showPage('home')" class="w-full mt-4 text-white/20 hover:text-white/60 text-[10px] luxury-caption uppercase transition-all">Go Back</button>
                 </div>
             </form>
         </div>
@@ -1338,7 +1235,7 @@
             <h2 class="text-5xl font-extrabold tracking-tighter mb-4 lowercase">Early Bird <span class="text-white/20">Pass.</span></h2>
             <div class="text-6xl font-black text-[#D4AF37] mb-12">₹299</div>
             <div class="space-y-6 mb-12 text-white/60">
-                <p>Complete your payment to secure your spot at The Phoolish Concert.</p>
+                <p>Complete your payment to secure your spot.</p>
                 <div class="h-[1px] bg-white/10 w-full"></div>
                 <div class="flex justify-between text-sm uppercase tracking-widest">
                     <span>Processing Fee</span>
@@ -1358,7 +1255,7 @@
             <h2 class="text-5xl font-extrabold tracking-tighter mb-4 lowercase">Regular <span class="text-white/20">Pass.</span></h2>
             <div class="text-6xl font-black text-[#D4AF37] mb-12">₹599</div>
             <div class="space-y-6 mb-12 text-white/60">
-                <p>Complete your payment to secure your spot at The Phoolish Concert.</p>
+                <p>Complete your payment to secure your spot.</p>
                 <div class="h-[1px] bg-white/10 w-full"></div>
                 <div class="flex justify-between text-sm uppercase tracking-widest">
                     <span>Processing Fee</span>

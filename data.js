@@ -22,25 +22,7 @@ const STORAGE_KEYS = {
 
 /* --- Default Data --- */
 function getDefaultEvents() {
-    return [
-        {
-            id: 'apurva',
-            name: 'The Phoolish Concert',
-            date: '13th June',
-            location: 'Mumbai',
-            description: 'Live Performance',
-            image: 'https://images.unsplash.com/photo-1511735111819-9a3f7709049c?auto=format&fit=crop&q=80&w=1200'
-        },
-        {
-            id: 'creators',
-            name: 'Creators Interval',
-            date: 'TBA',
-            location: 'TBA',
-            description: 'Brunch & Community',
-            image: 'https://images.unsplash.com/photo-1528605248644-14dd04cb11c7?auto=format&fit=crop&q=80&w=1200',
-            pageId: 'event-creators'
-        }
-    ];
+    return [];
 }
 
 function getDefaultInfluencers() {
@@ -99,12 +81,7 @@ function getDefaultInfluencers() {
 }
 
 function getDefaultAnnouncements() {
-    return [
-        {
-            id: '1',
-            text: 'The Phoolish Concert by Apurva Bondre – 13th June, Mumbai'
-        }
-    ];
+    return [];
 }
 
 function getDefaultJournals() {

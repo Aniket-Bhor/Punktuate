@@ -484,7 +484,7 @@ function showPage(pageId) {
     // State Protection: Prevent direct access to payment pages without selection
     if (pageId.startsWith('payment-') && !ticketSelectionState.selected) {
         console.warn("Access denied to payment page: No ticket selected.");
-        showPage('event-apurva'); // Redirect back to event page
+        showPage('event-dynamic'); // Redirect back to event page
         return;
     }
 
@@ -1033,12 +1033,7 @@ function getDefaultInfluencers() {
     ];
 }
 
-function getDefaultAnnouncements() {
-    return [
-        {
-            id: '1',
-            text: 'The Phoolish Concert by Apurva Bondre – 12th June, Mumbai'
-        }
+function getDefaultAnnouncements() { return []; }
     ];
 }
 
