@@ -216,6 +216,16 @@ function openDynamicEvent(eventId) {
     const artistBioEl = document.getElementById('dynamic-event-artist-bio');
     if(artistBioEl) artistBioEl.textContent = evt.artistBio || '';
     
+    const artistInstaEl = document.getElementById('dynamic-event-artist-instagram');
+    if (artistInstaEl) {
+        if (evt.artistInstagram) {
+            artistInstaEl.href = evt.artistInstagram;
+            artistInstaEl.style.display = 'inline-flex';
+        } else {
+            artistInstaEl.style.display = 'none';
+        }
+    }
+    
     const dateEl = document.getElementById('dynamic-event-date');
     if(dateEl) dateEl.innerHTML = evt.date || 'TBA';
     

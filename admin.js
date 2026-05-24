@@ -636,6 +636,7 @@ function editEvent(id) {
     document.getElementById('event-date').value = evt.date || '';
     document.getElementById('event-bio').value = evt.eventBio || '';
     document.getElementById('artist-bio').value = evt.artistBio || '';
+    document.getElementById('artist-instagram').value = evt.artistInstagram || '';
     document.getElementById('event-description').value = evt.description || '';
     document.getElementById('event-location').value = evt.location || '';
     document.getElementById('event-location-link').value = evt.locationLink || '';
@@ -824,6 +825,7 @@ function initForms() {
                     date: document.getElementById('event-date').value,
                     eventBio: document.getElementById('event-bio').value,
                     artistBio: document.getElementById('artist-bio').value,
+                    artistInstagram: document.getElementById('artist-instagram').value,
                     description: document.getElementById('event-description').value,
                     location: document.getElementById('event-location').value,
                     locationLink: document.getElementById('event-location-link').value,
