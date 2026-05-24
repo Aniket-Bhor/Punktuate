@@ -577,6 +577,13 @@ function openModal(type) {
     } else if (config.modal === 'journal-modal') {
         document.getElementById('journal-modal-title').textContent = config.title;
     }
+    
+    if (config.modal === 'announcement-modal') {
+        const select = document.getElementById('announcement-event-id');
+        if (select) {
+            select.innerHTML = '<option value="">None</option>' + events.map(e => `<option value="${e.id}">${e.name || 'Unnamed Event'}</option>`).join('');
+        }
+    }
 }
 
 function closeModal() {
@@ -693,6 +700,11 @@ function editAnnouncement(id) {
     document.getElementById('announcement-text').value = ann.text;
     
     openModal('edit-announcement');
+    
+    setTimeout(() => {
+        const select = document.getElementById('announcement-event-id');
+        if(select && ann.eventId) select.value = ann.eventId;
+    }, 50);
 }
 
 async function deleteAnnouncement(id) {
@@ -908,7 +920,8 @@ function initForms() {
             
             const data = {
                 id: id || generateId(),
-                text: document.getElementById('announcement-text').value
+                text: document.getElementById('announcement-text').value,
+                eventId: document.getElementById('announcement-event-id').value || null
             };
             
             try {

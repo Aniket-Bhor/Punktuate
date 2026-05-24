@@ -112,6 +112,16 @@ function renderAnnouncements(announcements) {
         const latest = announcements[announcements.length - 1];
         const textEl = banner.querySelector('p');
         if (textEl) textEl.textContent = latest.text;
+        
+        if (latest.eventId) {
+            banner.onclick = (e) => {
+                e.preventDefault();
+                openDynamicEvent(latest.eventId);
+            };
+        } else {
+            banner.onclick = () => showPage('home');
+        }
+        
         banner.classList.remove('hidden');
         banner.style.display = 'flex';
         if (navbar) {
@@ -137,6 +147,18 @@ async function loadEvents() {
     
     globalEvents = events;
     renderEvents(globalEvents);
+}
+
+function formatTime12hr(time24) {
+    if (!time24) return '';
+    const parts = time24.split(':');
+    if (parts.length < 2) return time24;
+    let hours = parseInt(parts[0], 10);
+    const minutes = parts[1];
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours ? hours : 12;
+    return `${hours}:${minutes} ${ampm}`;
 }
 
 function renderEvents(events) {
@@ -169,7 +191,7 @@ function renderEvents(events) {
                     <div>
                         <h3 class="text-4xl font-bold tracking-tighter uppercase mb-4">${evt.name}</h3>
                         <div class="flex gap-6 luxury-caption text-[10px] text-white/40">
-                            ${evt.date ? `<span class="flex items-center gap-2"><i data-lucide="calendar" class="w-3 h-3 text-[#D4AF37]"></i> ${evt.date}${evt.time ? ` @ ${evt.time}` : ''}</span>` : ''}
+                            ${evt.date ? `<span class="flex items-center gap-2"><i data-lucide="calendar" class="w-3 h-3 text-[#D4AF37]"></i> ${evt.date}${evt.time ? ` @ ${formatTime12hr(evt.time)}` : ''}</span>` : ''}
                             ${evt.location ? `<span class="flex items-center gap-2"><i data-lucide="map-pin" class="w-3 h-3 text-[#D4AF37]"></i> ${evt.location}</span>` : ''}
                         </div>
                     </div>
@@ -200,7 +222,7 @@ function openDynamicEvent(eventId) {
     const dateEl = document.getElementById('dynamic-event-date');
     if(dateEl) {
         if (evt.date && evt.time) {
-            dateEl.innerHTML = `${evt.date} @ ${evt.time}`;
+            dateEl.innerHTML = `${evt.date} @ ${formatTime12hr(evt.time)}`;
         } else {
             dateEl.innerHTML = evt.date || 'TBA';
         }

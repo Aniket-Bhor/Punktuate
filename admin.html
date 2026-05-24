@@ -458,7 +458,12 @@
                     <input type="hidden" id="announcement-id">
                     <div>
                         <label class="text-white/60 luxury-caption text-[10px] uppercase tracking-[0.15em] block mb-3">Announcement Text</label>
-                        <input type="text" id="announcement-text" required class="input-field w-full glass border border-white/10 rounded-[20px] p-5 bg-transparent text-white outline-none">
+                        <input type="text" id="announcement-text" required class="input-field w-full glass border border-white/10 rounded-[20px] p-5 bg-transparent text-white outline-none mb-4">
+                        
+                        <label class="text-white/60 luxury-caption text-[10px] uppercase tracking-[0.15em] block mb-3">Link to Event (Optional)</label>
+                        <select id="announcement-event-id" class="input-field w-full glass border border-white/10 rounded-[20px] p-5 bg-[#000B3D] text-white outline-none">
+                            <option value="">None</option>
+                        </select>
                     </div>
                     <div class="flex gap-4 pt-4">
                         <button type="button" onclick="closeModal()" class="flex-1 btn-hover glass border border-white/10 px-8 py-4 rounded-[20px] luxury-caption text-[10px] font-bold text-white/60 transition-all">Cancel</button>
