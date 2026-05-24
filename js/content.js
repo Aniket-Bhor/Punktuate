@@ -263,12 +263,7 @@ function openDynamicEvent(eventId) {
     
     const actionBtn = document.getElementById('dynamic-event-action');
     if (actionBtn) {
-        if (evt.registrationLink) {
-            actionBtn.onclick = () => window.open(evt.registrationLink, '_blank');
-            actionBtn.style.display = 'inline-flex';
-        } else {
-            actionBtn.style.display = 'none';
-        }
+        actionBtn.style.display = 'inline-flex';
     }
     
     // Show the dynamic page
