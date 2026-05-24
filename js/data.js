@@ -39,7 +39,9 @@ function getDefaultEvents() {
             location: 'TBA',
             description: 'Brunch & Community',
             image: 'https://images.unsplash.com/photo-1528605248644-14dd04cb11c7?auto=format&fit=crop&q=80&w=1200',
-            pageId: 'event-creators'
+            eventHeading: 'Networking re-imagined.',
+            eventBio: 'Punktuate joins forces with **Folks** to bring you Creators Interval — a high-energy brunch organized for the creative community. This isn\'t your average networking event; it\'s a curated experience featuring interactive games, fun collaborations, and real conversations designed to bridge the gap between vision and execution.',
+            artistBio: 'Community Mixer'
         }
     ];
 }
