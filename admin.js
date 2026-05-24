@@ -599,7 +599,35 @@ function handleImageUpload(inputId, callback) {
     const input = document.getElementById(inputId);
     if (input && input.files && input.files[0]) {
         const reader = new FileReader();
-        reader.onload = (e) => callback(e.target.result);
+        reader.onload = (e) => {
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                let width = img.width;
+                let height = img.height;
+                const max_dim = 1200;
+                
+                if (width > height) {
+                    if (width > max_dim) {
+                        height = Math.round(height * max_dim / width);
+                        width = max_dim;
+                    }
+                } else {
+                    if (height > max_dim) {
+                        width = Math.round(width * max_dim / height);
+                        height = max_dim;
+                    }
+                }
+                
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+                const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+                callback(dataUrl);
+            };
+            img.src = e.target.result;
+        };
         reader.readAsDataURL(input.files[0]);
     }
 }
@@ -634,6 +662,7 @@ function editEvent(id) {
     document.getElementById('event-id').value = evt.id;
     document.getElementById('event-name').value = evt.name || '';
     document.getElementById('event-date').value = evt.date || '';
+    document.getElementById('event-heading').value = evt.eventHeading || '';
     document.getElementById('event-bio').value = evt.eventBio || '';
     document.getElementById('artist-bio').value = evt.artistBio || '';
     document.getElementById('artist-instagram').value = evt.artistInstagram || '';
@@ -823,6 +852,7 @@ function initForms() {
                     id: id || generateId(),
                     name: document.getElementById('event-name').value,
                     date: document.getElementById('event-date').value,
+                    eventHeading: document.getElementById('event-heading').value,
                     eventBio: document.getElementById('event-bio').value,
                     artistBio: document.getElementById('artist-bio').value,
                     artistInstagram: document.getElementById('artist-instagram').value,

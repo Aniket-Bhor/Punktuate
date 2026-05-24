@@ -232,8 +232,11 @@ function openDynamicEvent(eventId) {
     const locEl = document.getElementById('dynamic-event-location');
     if(locEl) locEl.innerHTML = evt.location || 'TBA';
     
-    const descEl = document.getElementById('dynamic-event-description');
-    if(descEl) descEl.textContent = evt.description || 'Join us for this amazing event.';
+    const headingEl = document.getElementById('dynamic-event-heading');
+    if(headingEl) headingEl.textContent = evt.eventHeading || 'Experience it.';
+    
+    const bioEl = document.getElementById('dynamic-event-bio');
+    if(bioEl) bioEl.textContent = evt.eventBio || 'Join us for this amazing event.';
     
     const hero = document.getElementById('dynamic-event-hero');
     if(hero) hero.style.backgroundImage = `url('${evt.image || 'mountain.jpg'}')`;
