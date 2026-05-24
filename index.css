@@ -753,3 +753,37 @@ h1, h2, .hero-text p {
     width: 85%; /* mock availability */
     transition: width 1.5s ease;
 }
+.ticket-card {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+    cursor: pointer;
+    position: relative;
+}
+
+.ticket-card:hover {
+    background: rgba(212, 175, 55, 0.05);
+    border-color: rgba(212, 175, 55, 0.3);
+    transform: translateY(-5px);
+}
+
+.ticket-card.selected {
+    background: rgba(212, 175, 55, 0.08);
+    border-color: #D4AF37;
+    box-shadow: 0 0 30px rgba(212, 175, 55, 0.2), inset 0 0 20px rgba(212, 175, 55, 0.05);
+    transform: scale(1.02) translateY(-8px);
+}
+
+.ticket-card.selected::before {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    border-radius: 42px;
+    padding: 2px;
+    background: linear-gradient(45deg, #D4AF37, transparent, #D4AF37);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+}
+

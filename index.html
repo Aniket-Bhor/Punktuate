@@ -1083,26 +1083,85 @@
                         <p id="dynamic-event-description" class="text-xl text-white/50 leading-relaxed mb-12 whitespace-pre-wrap">
                         </p>
                         
+                    </div>
+                    
+                    <div class="flex flex-col gap-12">
+                        <div class="relative group scroll-reveal">
+                            <div class="absolute inset-0 bg-[#D4AF37]/20 blur-3xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                            <div class="relative rounded-[40px] overflow-hidden border border-white/10">
+                                <img id="dynamic-event-image" src="" alt="Event Image" class="w-full h-auto artist-img">
+                                <div class="absolute bottom-0 left-0 w-full p-10 bg-gradient-to-t from-[#000B3D] to-transparent">
+                                    <span class="text-[#D4AF37] luxury-caption text-[12px] mb-2 block font-bold">Featured Event</span>
+                                    <h3 id="dynamic-event-title-small" class="text-4xl font-bold uppercase tracking-tighter"></h3>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Artist Info Section -->
-                        <div id="dynamic-event-artist-section" class="mt-12 pt-12 border-t border-white/10 hidden">
+                        <div id="dynamic-event-artist-section" class="scroll-reveal hidden">
                             <div class="flex items-center justify-between mb-6">
                                 <span class="text-[#D4AF37] luxury-caption text-[14px] font-bold">About the Artist</span>
-                                <a id="dynamic-event-artist-instagram" href="#" target="_blank" class="text-white/40 hover:text-[#D4AF37] transition-colors hidden">
+                                <a id="dynamic-event-artist-instagram" href="#" target="_blank" class="flex items-center gap-2 text-white/40 hover:text-[#D4AF37] transition-colors hidden">
+                                    <span class="text-[10px] luxury-caption font-bold uppercase tracking-widest hidden md:inline">Follow on Instagram</span>
                                     <i class="bx bxl-instagram text-2xl"></i>
                                 </a>
                             </div>
                             <p id="dynamic-event-artist-bio" class="text-lg text-white/50 leading-relaxed whitespace-pre-wrap"></p>
                         </div>
-                    </div>
-                    
-                    <div class="relative group scroll-reveal">
-                        <div class="absolute inset-0 bg-[#D4AF37]/20 blur-3xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                        <div class="relative rounded-[40px] overflow-hidden border border-white/10">
-                            <img id="dynamic-event-image" src="" alt="Event Image" class="w-full h-auto artist-img">
-                            <div class="absolute bottom-0 left-0 w-full p-10 bg-gradient-to-t from-[#000B3D] to-transparent">
-                                <span class="text-[#D4AF37] luxury-caption text-[12px] mb-2 block font-bold">Featured Event</span>
-                                <h3 id="dynamic-event-title-small" class="text-4xl font-bold uppercase tracking-tighter"></h3>
+                </div>
+            </div>
+
+            <!-- Ticketing Section -->
+            <div id="booking-section" class="max-w-7xl mx-auto px-6 pb-32 pt-12 border-t border-white/5">
+                <div class="text-center mb-24 scroll-reveal">
+                    <span class="text-[#D4AF37] luxury-caption text-[14px] mb-6 block font-bold">Secure Your Spot</span>
+                    <h2 class="text-7xl font-extrabold tracking-tighter lowercase">Ticket <span class="text-white/20">Options.</span></h2>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+                    <!-- Early Bird -->
+                    <div id="tier-early-bird" class="ticket-card p-12 rounded-[40px] flex flex-col scroll-reveal" onclick="selectTicket('earlybird', 299, this)">
+                        <div class="flex justify-between items-start mb-8">
+                            <div>
+                                <h3 class="text-2xl font-bold uppercase mb-2">Early Bird</h3>
+                                <div id="early-bird-urgency" class="text-[10px] text-[#D4AF37] font-bold mt-2 luxury-caption">Filling Fast ✨</div>
                             </div>
+                            <span class="bg-[#D4AF37]/10 text-[#D4AF37] px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest">Limited Offer</span>
+                        </div>
+                        <div class="text-5xl font-black mb-8" id="early-bird-price">₹299</div>
+                        <ul class="space-y-4 text-white/60 mb-12 flex-grow">
+                            <li class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-[#D4AF37]"></i> General Access</li>
+                            <li class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-[#D4AF37]"></i> Opening Night Entry</li>
+                        </ul>
+                        <div class="space-y-4">
+                            <button id="btn-early-bird" class="w-full py-5 rounded-full border border-white/20 luxury-caption text-[11px] font-extrabold transition-all select-btn">Select</button>
+                            <button id="proceed-btn-early-bird" onclick="showRazorpayPage()" class="w-full py-5 rounded-full bg-[#D4AF37] text-[#000B3D] luxury-caption text-[11px] font-black transition-all proceed-btn hidden shadow-2xl flex items-center justify-center gap-3 group">
+                                Proceed to Payment <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Regular -->
+                    <div id="tier-regular" class="ticket-card p-12 rounded-[40px] flex flex-col scroll-reveal" onclick="selectTicket('regular', 499, this)">
+                        <div class="flex justify-between items-start mb-8">
+                            <div>
+                                <h3 class="text-2xl font-bold uppercase mb-2">Regular</h3>
+                                <p class="text-white/40 text-sm">Standard entry</p>
+                            </div>
+                        </div>
+                        <div class="mb-8">
+                            <div class="text-5xl font-black" id="regular-price">₹499</div>
+                            <div class="text-white/40 line-through text-xl mt-2" id="regular-original-price">₹499</div>
+                        </div>
+                        <ul class="space-y-4 text-white/60 mb-12 flex-grow">
+                            <li class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-[#D4AF37]"></i> General Access</li>
+                            <li class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-[#D4AF37]"></i> Standing Zone</li>
+                        </ul>
+                        <div class="space-y-4">
+                            <button id="btn-regular" class="w-full py-5 rounded-full border border-white/20 luxury-caption text-[11px] font-extrabold transition-all select-btn">Select</button>
+                            <button id="proceed-btn-regular" onclick="showRazorpayPage()" class="w-full py-5 rounded-full bg-[#D4AF37] text-[#000B3D] luxury-caption text-[11px] font-black transition-all proceed-btn hidden shadow-2xl flex items-center justify-center gap-3 group">
+                                Proceed to Payment <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
