@@ -169,7 +169,7 @@ function renderEvents(events) {
                     <div>
                         <h3 class="text-4xl font-bold tracking-tighter uppercase mb-4">${evt.name}</h3>
                         <div class="flex gap-6 luxury-caption text-[10px] text-white/40">
-                            ${evt.date ? `<span class="flex items-center gap-2"><i data-lucide="calendar" class="w-3 h-3 text-[#D4AF37]"></i> ${evt.date}</span>` : ''}
+                            ${evt.date ? `<span class="flex items-center gap-2"><i data-lucide="calendar" class="w-3 h-3 text-[#D4AF37]"></i> ${evt.date}${evt.time ? ` @ ${evt.time}` : ''}</span>` : ''}
                             ${evt.location ? `<span class="flex items-center gap-2"><i data-lucide="map-pin" class="w-3 h-3 text-[#D4AF37]"></i> ${evt.location}</span>` : ''}
                         </div>
                     </div>
@@ -189,19 +189,28 @@ function openDynamicEvent(eventId) {
     if (!evt) return;
     
     const titleEl = document.getElementById('dynamic-event-title');
-    if(titleEl) titleEl.innerHTML = evt.name;
+    if(titleEl) titleEl.innerHTML = evt.header || evt.name;
     
     const titleSmallEl = document.getElementById('dynamic-event-title-small');
     if(titleSmallEl) titleSmallEl.innerHTML = evt.name;
     
+    const aboutTitleEl = document.getElementById('dynamic-event-about-title');
+    if(aboutTitleEl) aboutTitleEl.innerHTML = evt.aboutTitle || `Experience <span class="text-white/20">it.</span>`;
+    
     const dateEl = document.getElementById('dynamic-event-date');
-    if(dateEl) dateEl.innerHTML = evt.date || 'TBA';
+    if(dateEl) {
+        if (evt.date && evt.time) {
+            dateEl.innerHTML = `${evt.date} @ ${evt.time}`;
+        } else {
+            dateEl.innerHTML = evt.date || 'TBA';
+        }
+    }
     
     const locEl = document.getElementById('dynamic-event-location');
     if(locEl) locEl.innerHTML = evt.location || 'TBA';
     
     const descEl = document.getElementById('dynamic-event-description');
-    if(descEl) descEl.textContent = evt.description || 'Join us for this amazing event.';
+    if(descEl) descEl.innerHTML = (evt.bio || evt.description || 'Join us for this amazing event.').replace(/\n/g, '<br>');
     
     const hero = document.getElementById('dynamic-event-hero');
     if(hero) hero.style.backgroundImage = `url('${evt.image || 'mountain.jpg'}')`;

@@ -598,9 +598,40 @@ function generateId() {
 function handleImageUpload(inputId, callback) {
     const input = document.getElementById(inputId);
     if (input && input.files && input.files[0]) {
+        const file = input.files[0];
         const reader = new FileReader();
-        reader.onload = (e) => callback(e.target.result);
-        reader.readAsDataURL(input.files[0]);
+        reader.onload = (e) => {
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                const MAX_WIDTH = 1200;
+                const MAX_HEIGHT = 1200;
+                let width = img.width;
+                let height = img.height;
+
+                if (width > height) {
+                    if (width > MAX_WIDTH) {
+                        height *= MAX_WIDTH / width;
+                        width = MAX_WIDTH;
+                    }
+                } else {
+                    if (height > MAX_HEIGHT) {
+                        width *= MAX_HEIGHT / height;
+                        height = MAX_HEIGHT;
+                    }
+                }
+                
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+                
+                const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.6);
+                callback(compressedDataUrl);
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
     }
 }
 
@@ -635,6 +666,8 @@ function editEvent(id) {
     document.getElementById('event-name').value = evt.name;
     document.getElementById('event-date').value = evt.date;
     document.getElementById('event-time').value = evt.time || '';
+    document.getElementById('event-header').value = evt.header || '';
+    document.getElementById('event-about-title').value = evt.aboutTitle || '';
     document.getElementById('event-bio').value = evt.bio || '';
     document.getElementById('event-artist-bio').value = evt.artistBio || '';
     document.getElementById('event-description').value = evt.description || '';
@@ -824,6 +857,8 @@ function initForms() {
                     name: document.getElementById('event-name').value,
                     date: document.getElementById('event-date').value,
                     time: document.getElementById('event-time').value,
+                    header: document.getElementById('event-header').value,
+                    aboutTitle: document.getElementById('event-about-title').value,
                     bio: document.getElementById('event-bio').value,
                     artistBio: document.getElementById('event-artist-bio').value,
                     description: document.getElementById('event-description').value,
