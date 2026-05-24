@@ -212,6 +212,27 @@ function openDynamicEvent(eventId) {
     const descEl = document.getElementById('dynamic-event-description');
     if(descEl) descEl.innerHTML = (evt.bio || evt.description || 'Join us for this amazing event.').replace(/\n/g, '<br>');
     
+    const artistSection = document.getElementById('dynamic-event-artist-section');
+    if(artistSection) {
+        if (evt.artistBio) {
+            artistSection.classList.remove('hidden');
+            const artistBioEl = document.getElementById('dynamic-event-artist-bio');
+            if(artistBioEl) artistBioEl.innerHTML = evt.artistBio.replace(/\n/g, '<br>');
+            
+            const artistInstaEl = document.getElementById('dynamic-event-artist-instagram');
+            if(artistInstaEl) {
+                if (evt.artistInstagram) {
+                    artistInstaEl.href = evt.artistInstagram;
+                    artistInstaEl.classList.remove('hidden');
+                } else {
+                    artistInstaEl.classList.add('hidden');
+                }
+            }
+        } else {
+            artistSection.classList.add('hidden');
+        }
+    }
+    
     const hero = document.getElementById('dynamic-event-hero');
     if(hero) hero.style.backgroundImage = `url('${evt.image || 'mountain.jpg'}')`;
     

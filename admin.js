@@ -670,6 +670,7 @@ function editEvent(id) {
     document.getElementById('event-about-title').value = evt.aboutTitle || '';
     document.getElementById('event-bio').value = evt.bio || '';
     document.getElementById('event-artist-bio').value = evt.artistBio || '';
+    document.getElementById('event-artist-instagram').value = evt.artistInstagram || '';
     document.getElementById('event-description').value = evt.description || '';
     document.getElementById('event-location').value = evt.location || '';
     document.getElementById('event-google-maps').value = evt.googleMaps || '';
@@ -861,6 +862,7 @@ function initForms() {
                     aboutTitle: document.getElementById('event-about-title').value,
                     bio: document.getElementById('event-bio').value,
                     artistBio: document.getElementById('event-artist-bio').value,
+                    artistInstagram: document.getElementById('event-artist-instagram').value,
                     description: document.getElementById('event-description').value,
                     location: document.getElementById('event-location').value,
                     googleMaps: document.getElementById('event-google-maps').value,
