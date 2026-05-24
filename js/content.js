@@ -7,6 +7,36 @@
  * ─────────────────────────────────────────────────────────────
  */
 
+/* ── Date formatting helper ──────────────────────────────────── */
+function formatEventDate(dateString) {
+    if (!dateString) return 'TBA';
+    // dateString from datetime-local is usually "YYYY-MM-DDTHH:mm"
+    try {
+        const dateObj = new Date(dateString);
+        if (isNaN(dateObj.getTime())) return dateString; // fallback
+        
+        const day = dateObj.getDate();
+        const suffix = (day % 10 === 1 && day !== 11) ? 'st' :
+                       (day % 10 === 2 && day !== 12) ? 'nd' :
+                       (day % 10 === 3 && day !== 13) ? 'rd' : 'th';
+        
+        const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        const month = monthNames[dateObj.getMonth()];
+        const year = dateObj.getFullYear();
+        
+        let hours = dateObj.getHours();
+        const minutes = dateObj.getMinutes().toString().padStart(2, '0');
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12;
+        hours = hours ? hours : 12; // the hour '0' should be '12'
+        const paddedHours = hours.toString().padStart(2, '0');
+        
+        return `${day}${suffix} ${month} ${year} | ${paddedHours}:${minutes} ${ampm}`;
+    } catch (e) {
+        return dateString;
+    }
+}
+
 /* ── Shared IntersectionObserver for scroll-reveal ─────────── */
 const scrollObserver = new IntersectionObserver(
     entries => {
@@ -175,7 +205,7 @@ function renderEvents(events) {
                     <div>
                         <h3 class="text-4xl font-bold tracking-tighter uppercase mb-4">${evt.name}</h3>
                         <div class="flex gap-6 luxury-caption text-[10px] text-white/40">
-                            ${evt.date ? `<span class="flex items-center gap-2"><i data-lucide="calendar" class="w-3 h-3 text-[#D4AF37]"></i> ${evt.date}</span>` : ''}
+                            ${evt.date ? `<span class="flex items-center gap-2"><i data-lucide="calendar" class="w-3 h-3 text-[#D4AF37]"></i> ${formatEventDate(evt.date)}</span>` : ''}
                             ${evt.location ? `<span class="flex items-center gap-2"><i data-lucide="map-pin" class="w-3 h-3 text-[#D4AF37]"></i> ${evt.location}</span>` : ''}
                         </div>
                     </div>
@@ -214,7 +244,7 @@ function openDynamicEvent(eventId) {
     }
     
     const dateEl = document.getElementById('dynamic-event-date');
-    if(dateEl) dateEl.innerHTML = evt.date || 'TBA';
+    if(dateEl) dateEl.innerHTML = formatEventDate(evt.date);
     
     const locEl = document.getElementById('dynamic-event-location');
     if(locEl) locEl.innerHTML = evt.location || 'TBA';
@@ -248,11 +278,11 @@ function openDynamicEvent(eventId) {
     }
 
     const bookingSubtitle = document.getElementById('booking-flow-event-subtitle');
-    if(bookingSubtitle) bookingSubtitle.textContent = `${evt.name} – ${evt.date || 'TBA'}`;
+    if(bookingSubtitle) bookingSubtitle.textContent = `${evt.name} – ${formatEventDate(evt.date)}`;
     
     // Show the dynamic page
     if (typeof showPage === 'function') {
-        showPage('event-dynamic');
+        showPage('event-dynamic', eventId);
     }
 }
 
@@ -432,12 +462,23 @@ function animateBars() {
 }
 
 /* ── Bootstrap ───────────────────────────────────────────────── */
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     loadInfluencers();
     loadAnnouncements();
-    loadEvents();
+    await loadEvents();
     loadJournals();
     loadFounders();
     loadFaces();
     loadCareers();
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const eventId = urlParams.get('event');
+    if (eventId) {
+        openDynamicEvent(eventId);
+    } else {
+        const pageId = urlParams.get('page');
+        if (pageId && typeof showPage === 'function') {
+            showPage(pageId);
+        }
+    }
 });

@@ -9,11 +9,11 @@
  * Navigate to a page section within the SPA.
  * Guards payment pages from being accessed without ticket selection.
  */
-function showPage(pageId) {
+function showPage(pageId, extraParam = null) {
     // Guard: payment pages require a ticket to be selected first
-    if (pageId.startsWith('payment-') && !ticketSelectionState.selected) {
+    if (pageId.startsWith('payment-') && typeof ticketSelectionState !== 'undefined' && !ticketSelectionState.selected) {
         console.warn('Access denied to payment page: No ticket selected.');
-        showPage('event-apurva');
+        showPage('home');
         return;
     }
 
@@ -47,6 +47,17 @@ function showPage(pageId) {
         activeMobileLink.classList.add('text-[#D4AF37]', 'font-extrabold');
         activeMobileLink.classList.remove('text-white/60');
     }
+
+    // Update URL without reloading
+    const url = new URL(window.location);
+    if (pageId === 'home') {
+        url.search = '';
+    } else if (pageId === 'event-dynamic' && extraParam) {
+        url.search = `?event=${extraParam}`;
+    } else {
+        url.search = `?page=${pageId}`;
+    }
+    window.history.pushState({}, '', url);
 
     // Scroll to top
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -88,5 +99,23 @@ window.addEventListener('scroll', () => {
         navbar.classList.add('scrolled');
     } else {
         navbar.classList.remove('scrolled');
+    }
+});
+
+/* --- Browser Back/Forward Navigation --- */
+window.addEventListener('popstate', () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const eventId = urlParams.get('event');
+    if (eventId) {
+        if (typeof openDynamicEvent === 'function') {
+            openDynamicEvent(eventId);
+        }
+    } else {
+        const pageId = urlParams.get('page') || 'home';
+        // Call internal logic directly to avoid pushState loop
+        document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+        const target = document.getElementById(pageId);
+        if (target) target.classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 });
