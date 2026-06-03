@@ -1,0 +1,301 @@
+<!-- ═══════════════════════════════════════════════════════
+     HOME PAGE  —  pages/home.html
+     Injected into #app by js/router.js
+═══════════════════════════════════════════════════════ -->
+
+<!-- Cinematic hero -->
+<div class="relative h-screen w-full flex items-center justify-center overflow-hidden">
+    <div class="absolute inset-0 z-0">
+        <img src="mountain.jpg" alt="Enjoy the view" class="w-full h-full object-cover opacity-85">
+        <div class="absolute inset-0 bg-gradient-to-b from-[#000B3D]/90 via-transparent to-[#000B3D]"></div>
+    </div>
+    <div class="relative z-10 text-center px-6 max-w-5xl mx-auto">
+        <h2 class="text-3xl md:text-5xl lg:text-7xl font-black tracking-tighter lowercase leading-[1.1] mb-8">
+            we handle your <span class="text-[#D4AF37]">social media</span> so you can enjoy <span class="text-white/60">views like this.</span>
+        </h2>
+        <p class="text-white/40 luxury-caption text-[11px] tracking-[0.3em] mt-12">Scroll to explore the collective</p>
+        <div class="mt-8 animate-bounce">
+            <i data-lucide="chevron-down" class="w-6 h-6 text-[#D4AF37] mx-auto"></i>
+        </div>
+    </div>
+</div>
+
+<!-- Hero text -->
+<div class="min-h-screen flex flex-col items-center justify-center text-center px-6 pt-32 pb-20">
+    <div class="hero-text">
+        <span class="text-[#D4AF37] luxury-caption text-[14px] mb-8 block font-bold animate-pulse">The Premier Creative Studio</span>
+        <h1 class="text-5xl md:text-7xl lg:text-[11rem] font-extrabold tracking-tight mb-10 leading-[0.85] lowercase">
+            your brand <br><span class="text-white/20">re-imagined.</span>
+        </h1>
+        <p class="text-xl md:text-2xl lg:text-3xl text-white/50 font-normal mb-16 max-w-3xl mx-auto leading-tight tracking-tight">
+            We specialize in the intersection of high-concept artistry and radical revenue growth for modern luxury and tech brands.
+        </p>
+    </div>
+    <div class="flex gap-6">
+        <button onclick="router.navigate('contact')" class="btn-hover flex items-center gap-4 bg-[#D4AF37] text-white px-10 py-5 rounded-full luxury-caption text-[12px] font-extrabold shadow-2xl">
+            Explore Growth <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </button>
+    </div>
+</div>
+
+<!-- Partners -->
+<div class="py-24 border-y border-white/5 glass">
+    <div class="max-w-7xl mx-auto px-6">
+        <p class="luxury-caption text-[12px] text-center text-white/40 mb-20 font-bold">Partners in Excellence</p>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-16 items-center">
+            <div class="brand-logo-container flex justify-center"><img src="Maestro_LOGO.png" alt="Maestro" class="h-16 w-auto opacity-60 hover:opacity-100 transition-all"></div>
+            <div class="brand-logo-container flex justify-center"><img src="herwamissindia.png" alt="Herwa Miss India" class="h-20 w-auto opacity-60 hover:opacity-100 transition-all"></div>
+            <div class="brand-logo-container flex justify-center"><img src="Westelle_LOGO.png" alt="Westelle" class="h-12 w-auto opacity-60 hover:opacity-100 transition-all filter invert"></div>
+            <div class="brand-logo-container flex justify-center"><img src="indusqa_LOGO.png" alt="IndusQA" class="h-14 w-auto opacity-60 hover:opacity-100 transition-all filter invert"></div>
+        </div>
+    </div>
+</div>
+
+<!-- The Blueprint -->
+<div class="py-40 px-6 max-w-7xl mx-auto">
+    <div class="text-center mb-32">
+        <span class="text-[#D4AF37] luxury-caption text-[14px] mb-6 block font-bold">What we do</span>
+        <h2 class="text-7xl md:text-8xl font-extrabold tracking-tighter mb-4 lowercase">The Blueprint.</h2>
+    </div>
+    <div class="grid md:grid-cols-3 gap-12">
+        <div class="hover-card p-12 rounded-[40px] glass border border-white/5 flex flex-col h-full">
+            <div class="flex justify-between items-start mb-12">
+                <i data-lucide="palette" class="text-[#D4AF37] w-12 h-12"></i>
+                <span class="text-[4rem] font-extrabold text-white/5 leading-none">01</span>
+            </div>
+            <h3 class="text-3xl font-bold mb-6 uppercase tracking-tighter">Branding & Identity</h3>
+            <p class="text-lg text-white/40 leading-relaxed font-normal">Beyond logos, we create scalable design languages that command attention.</p>
+        </div>
+        <div class="hover-card p-12 rounded-[40px] glass border border-white/5 flex flex-col h-full">
+            <div class="flex justify-between items-start mb-12">
+                <i data-lucide="share-2" class="text-[#D4AF37] w-12 h-12"></i>
+                <span class="text-[4rem] font-extrabold text-white/5 leading-none">02</span>
+            </div>
+            <h3 class="text-3xl font-bold mb-6 uppercase tracking-tighter">Content & Social Media Strategy</h3>
+            <p class="text-lg text-white/40 leading-relaxed font-normal">Strategic content calendars and storytelling that resonates with your community.</p>
+        </div>
+        <div class="hover-card p-12 rounded-[40px] glass border border-white/5 flex flex-col h-full">
+            <div class="flex justify-between items-start mb-12">
+                <i data-lucide="trending-up" class="text-[#D4AF37] w-12 h-12"></i>
+                <span class="text-[4rem] font-extrabold text-white/5 leading-none">03</span>
+            </div>
+            <h3 class="text-3xl font-bold mb-6 uppercase tracking-tighter">Marketing Strategy & Ad Campaigns</h3>
+            <p class="text-lg text-white/40 leading-relaxed font-normal">Performance-led engines that bridge high-end aesthetics and conversion.</p>
+        </div>
+        <div class="hover-card p-12 rounded-[40px] glass border border-white/5 flex flex-col h-full">
+            <div class="flex justify-between items-start mb-12">
+                <i data-lucide="clapperboard" class="text-[#D4AF37] w-12 h-12"></i>
+                <span class="text-[4rem] font-extrabold text-white/5 leading-none">04</span>
+            </div>
+            <h3 class="text-3xl font-bold mb-6 uppercase tracking-tighter">Creative Direction</h3>
+            <p class="text-lg text-white/40 leading-relaxed font-normal">Visionary direction that ensures consistency and impact across all brand touchpoints.</p>
+        </div>
+        <div class="hover-card p-12 rounded-[40px] glass border border-white/5 flex flex-col h-full">
+            <div class="flex justify-between items-start mb-12">
+                <i data-lucide="rocket" class="text-[#D4AF37] w-12 h-12"></i>
+                <span class="text-[4rem] font-extrabold text-white/5 leading-none">05</span>
+            </div>
+            <h3 class="text-3xl font-bold mb-6 uppercase tracking-tighter">Digital Marketing & Growth</h3>
+            <p class="text-lg text-white/40 leading-relaxed font-normal">Scaling your brand's presence and impact through targeted growth systems.</p>
+        </div>
+        <div class="hover-card p-12 rounded-[40px] glass border border-white/5 flex flex-col h-full">
+            <div class="flex justify-between items-start mb-12">
+                <i data-lucide="search" class="text-[#D4AF37] w-12 h-12"></i>
+                <span class="text-[4rem] font-extrabold text-white/5 leading-none">06</span>
+            </div>
+            <h3 class="text-3xl font-bold mb-6 uppercase tracking-tighter">Consulting & Brand Audits</h3>
+            <p class="text-lg text-white/40 leading-relaxed font-normal">In-depth analysis and strategic consulting to optimize your brand performance.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Our Process -->
+<div class="max-w-7xl mx-auto px-6 mb-40">
+    <div class="text-center mb-24">
+        <span class="text-[#D4AF37] luxury-caption text-[14px] mb-6 block font-bold">How we work</span>
+        <h2 class="text-7xl md:text-8xl font-extrabold tracking-tighter mb-4 lowercase">Our <span class="text-white/20">Process.</span></h2>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-5 gap-8">
+        <div class="glass p-8 rounded-[30px] border border-white/5 text-center group hover:bg-[#D4AF37]/10 transition-all">
+            <div class="text-4xl font-black text-white/5 mb-6 group-hover:text-[#D4AF37] transition-all">01</div>
+            <h4 class="text-xl font-bold mb-4 uppercase">Understand</h4>
+            <p class="text-sm text-white/40">brand, audience, context</p>
+        </div>
+        <div class="glass p-8 rounded-[30px] border border-white/5 text-center group hover:bg-[#D4AF37]/10 transition-all">
+            <div class="text-4xl font-black text-white/5 mb-6 group-hover:text-[#D4AF37] transition-all">02</div>
+            <h4 class="text-xl font-bold mb-4 uppercase">Define</h4>
+            <p class="text-sm text-white/40">positioning, goals, direction</p>
+        </div>
+        <div class="glass p-8 rounded-[30px] border border-white/5 text-center group hover:bg-[#D4AF37]/10 transition-all">
+            <div class="text-4xl font-black text-white/5 mb-6 group-hover:text-[#D4AF37] transition-all">03</div>
+            <h4 class="text-xl font-bold mb-4 uppercase">Create</h4>
+            <p class="text-sm text-white/40">strategy-led creative</p>
+        </div>
+        <div class="glass p-8 rounded-[30px] border border-white/5 text-center group hover:bg-[#D4AF37]/10 transition-all">
+            <div class="text-4xl font-black text-white/5 mb-6 group-hover:text-[#D4AF37] transition-all">04</div>
+            <h4 class="text-xl font-bold mb-4 uppercase">Execute</h4>
+            <p class="text-sm text-white/40">with precision</p>
+        </div>
+        <div class="glass p-8 rounded-[30px] border border-white/5 text-center group hover:bg-[#D4AF37]/10 transition-all">
+            <div class="text-4xl font-black text-white/5 mb-6 group-hover:text-[#D4AF37] transition-all">05</div>
+            <h4 class="text-xl font-bold mb-4 uppercase">Refine</h4>
+            <p class="text-sm text-white/40">based on results</p>
+        </div>
+    </div>
+</div>
+
+<!-- Let's Eat Grandma -->
+<div class="max-w-7xl mx-auto px-6 mb-40">
+    <div class="grid lg:grid-cols-2 gap-20 items-center">
+        <div class="bg-[#D4AF37] p-16 rounded-[40px] text-[#000B3D]">
+            <h3 class="text-6xl font-black mb-4">Let's eat Grandma.</h3>
+            <h3 class="text-6xl font-black opacity-40">Let's eat, Grandma.</h3>
+        </div>
+        <div>
+            <span class="text-[#D4AF37] luxury-caption text-[14px] mb-6 block font-bold">The Power of Punctuation</span>
+            <h2 class="text-5xl font-extrabold mb-8 lowercase tracking-tight">Say it right, or say something else entirely.</h2>
+            <p class="text-xl text-white/40 mb-8 font-normal">That's the power of punctuation. That's the power of marketing. We prioritize clarity over clutter and strategy before aesthetics.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Motion Stories -->
+<div class="max-w-7xl mx-auto px-6 mb-40">
+    <div class="text-center mb-24 scroll-reveal">
+        <span class="text-[#D4AF37] luxury-caption text-[14px] mb-6 block font-bold">Featured Work</span>
+        <h2 class="text-7xl md:text-8xl font-extrabold tracking-tighter mb-4 lowercase">Motion Stories.</h2>
+        <p class="text-xl text-white/40 max-w-2xl mx-auto font-normal">A glimpse into how we punctuate brands through dynamic, high-conversion visual narratives.</p>
+    </div>
+    <div class="grid md:grid-cols-2 gap-12">
+        <div class="scroll-reveal delay-100">
+            <div class="relative group cursor-pointer overflow-hidden rounded-[40px] border border-white/10 aspect-video glass flex items-center justify-center">
+                <div class="absolute inset-0 bg-gradient-to-br from-[#000B3D]/80 via-blue-900/30 to-[#D4AF37]/10"></div>
+                <div class="relative z-10 text-center px-8">
+                    <div class="w-20 h-20 rounded-full bg-[#D4AF37]/20 border border-[#D4AF37]/40 flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-all">
+                        <i data-lucide="play" class="w-8 h-8 text-[#D4AF37] fill-[#D4AF37]"></i>
+                    </div>
+                    <span class="text-[#D4AF37] luxury-caption text-[10px] mb-3 block font-bold">Herwa Miss India 2026</span>
+                    <h3 class="text-3xl font-bold tracking-tight">Audition Venue Reveal</h3>
+                </div>
+            </div>
+        </div>
+        <div class="scroll-reveal delay-300">
+            <div class="relative group cursor-pointer overflow-hidden rounded-[40px] border border-white/10 aspect-video glass flex items-center justify-center">
+                <div class="absolute inset-0 bg-gradient-to-br from-[#000B3D]/80 via-purple-900/30 to-[#D4AF37]/10"></div>
+                <div class="relative z-10 text-center px-8">
+                    <div class="w-20 h-20 rounded-full bg-[#D4AF37]/20 border border-[#D4AF37]/40 flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-all">
+                        <i data-lucide="play" class="w-8 h-8 text-[#D4AF37] fill-[#D4AF37]"></i>
+                    </div>
+                    <span class="text-[#D4AF37] luxury-caption text-[10px] mb-3 block font-bold">Maestro Music Institute</span>
+                    <h3 class="text-3xl font-bold tracking-tight">Following Trends</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Case Studies -->
+<div class="max-w-7xl mx-auto px-6 mb-40">
+    <div class="text-center mb-24">
+        <span class="text-[#D4AF37] luxury-caption text-[14px] mb-6 block font-bold">Featured Work</span>
+        <h2 class="text-7xl md:text-8xl font-extrabold tracking-tighter mb-4 lowercase">Case <span class="text-white/20">Studies.</span></h2>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="hover-card p-10 rounded-[40px] glass border border-white/5 cursor-pointer group relative overflow-hidden" onclick="openPortfolioModal('social')">
+            <div class="absolute inset-0 bg-[#D4AF37]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <div class="flex justify-between items-start mb-12 relative z-10">
+                <i data-lucide="share-2" class="text-[#D4AF37] w-12 h-12"></i>
+                <div class="w-10 h-10 rounded-full bg-[#D4AF37]/10 flex items-center justify-center pulse-btn">
+                    <i data-lucide="plus" class="text-[#D4AF37] w-5 h-5"></i>
+                </div>
+            </div>
+            <h3 class="text-3xl font-bold mb-4 uppercase relative z-10">Techpaathshala</h3>
+            <p class="text-lg text-white/40 mb-6 relative z-10">5M+ reach & 10x engagement growth.</p>
+            <div class="flex items-center gap-3 relative z-10">
+                <span class="text-[#D4AF37] text-[10px] font-bold luxury-caption uppercase tracking-widest">Click to Unlock Details</span>
+                <i data-lucide="arrow-right" class="text-[#D4AF37] w-4 h-4 group-hover:translate-x-2 transition-transform"></i>
+            </div>
+        </div>
+        <div class="hover-card p-10 rounded-[40px] glass border border-white/5 cursor-pointer group relative overflow-hidden" onclick="openPortfolioModal('ugc')">
+            <div class="absolute inset-0 bg-[#D4AF37]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <div class="flex justify-between items-start mb-12 relative z-10">
+                <i data-lucide="users" class="text-[#D4AF37] w-12 h-12"></i>
+                <div class="w-10 h-10 rounded-full bg-[#D4AF37]/10 flex items-center justify-center pulse-btn">
+                    <i data-lucide="plus" class="text-[#D4AF37] w-5 h-5"></i>
+                </div>
+            </div>
+            <h3 class="text-3xl font-bold mb-4 uppercase relative z-10">Swiggy & Molten</h3>
+            <p class="text-lg text-white/40 mb-6 relative z-10">UGC-based campaigns & creator coordination.</p>
+            <div class="flex items-center gap-3 relative z-10">
+                <span class="text-[#D4AF37] text-[10px] font-bold luxury-caption uppercase tracking-widest">Click to Unlock Details</span>
+                <i data-lucide="arrow-right" class="text-[#D4AF37] w-4 h-4 group-hover:translate-x-2 transition-transform"></i>
+            </div>
+        </div>
+        <div class="hover-card p-10 rounded-[40px] glass border border-white/5 cursor-pointer group relative overflow-hidden" onclick="openPortfolioModal('fashion')">
+            <div class="absolute inset-0 bg-[#D4AF37]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <div class="flex justify-between items-start mb-12 relative z-10">
+                <i data-lucide="shirt" class="text-[#D4AF37] w-12 h-12"></i>
+                <div class="w-10 h-10 rounded-full bg-[#D4AF37]/10 flex items-center justify-center pulse-btn">
+                    <i data-lucide="plus" class="text-[#D4AF37] w-5 h-5"></i>
+                </div>
+            </div>
+            <h3 class="text-3xl font-bold mb-4 uppercase relative z-10">Fashion Dekho</h3>
+            <p class="text-lg text-white/40 mb-6 relative z-10">Content creation for fashion & lifestyle.</p>
+            <div class="flex items-center gap-3 relative z-10">
+                <span class="text-[#D4AF37] text-[10px] font-bold luxury-caption uppercase tracking-widest">Click to Unlock Details</span>
+                <i data-lucide="arrow-right" class="text-[#D4AF37] w-4 h-4 group-hover:translate-x-2 transition-transform"></i>
+            </div>
+        </div>
+        <div class="hover-card p-10 rounded-[40px] glass border border-white/5 cursor-pointer group relative overflow-hidden" onclick="openPortfolioModal('page_mgmt')">
+            <div class="absolute inset-0 bg-[#D4AF37]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <div class="flex justify-between items-start mb-12 relative z-10">
+                <i data-lucide="crown" class="text-[#D4AF37] w-12 h-12"></i>
+                <div class="w-10 h-10 rounded-full bg-[#D4AF37]/10 flex items-center justify-center pulse-btn">
+                    <i data-lucide="plus" class="text-[#D4AF37] w-5 h-5"></i>
+                </div>
+            </div>
+            <h3 class="text-3xl font-bold mb-4 uppercase relative z-10">Herwa Miss India</h3>
+            <p class="text-lg text-white/40 mb-6 relative z-10">Social media visibility for high-profile brands.</p>
+            <div class="flex items-center gap-3 relative z-10">
+                <span class="text-[#D4AF37] text-[10px] font-bold luxury-caption uppercase tracking-widest">Click to Unlock Details</span>
+                <i data-lucide="arrow-right" class="text-[#D4AF37] w-4 h-4 group-hover:translate-x-2 transition-transform"></i>
+            </div>
+        </div>
+        <div class="hover-card p-10 rounded-[40px] glass border border-white/5 cursor-pointer group relative overflow-hidden" onclick="openPortfolioModal('consulting')">
+            <div class="absolute inset-0 bg-[#D4AF37]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <div class="flex justify-between items-start mb-12 relative z-10">
+                <i data-lucide="search" class="text-[#D4AF37] w-12 h-12"></i>
+                <div class="w-10 h-10 rounded-full bg-[#D4AF37]/10 flex items-center justify-center pulse-btn">
+                    <i data-lucide="plus" class="text-[#D4AF37] w-5 h-5"></i>
+                </div>
+            </div>
+            <h3 class="text-3xl font-bold mb-4 uppercase relative z-10">Consulting & Audits</h3>
+            <p class="text-lg text-white/40 mb-6 relative z-10">Clarity over clutter. Strategy before aesthetics.</p>
+            <div class="flex items-center gap-3 relative z-10">
+                <span class="text-[#D4AF37] text-[10px] font-bold luxury-caption uppercase tracking-widest">Click to Unlock Details</span>
+                <i data-lucide="arrow-right" class="text-[#D4AF37] w-4 h-4 group-hover:translate-x-2 transition-transform"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Brand ticker -->
+    <div class="mt-32 pt-20 border-t border-white/5 overflow-hidden">
+        <p class="luxury-caption text-[10px] text-white/20 text-center mb-12 tracking-[0.5em]">Trusted by visionary brands</p>
+        <div class="slider">
+            <div class="slide-track">
+                <div class="slide"><span class="tracking-tighter uppercase">Herwa</span></div>
+                <div class="slide"><span class="tracking-tight uppercase">Techpaathshala</span></div>
+                <div class="slide"><span class="italic uppercase">Molten</span></div>
+                <div class="slide"><span class="uppercase tracking-[0.2em]">Fashion Dekho</span></div>
+                <div class="slide"><span class="uppercase">Maestro Music Institute</span></div>
+                <div class="slide"><span class="uppercase">IndusQA</span></div>
+                <div class="slide"><span class="tracking-tighter uppercase">Herwa</span></div>
+                <div class="slide"><span class="tracking-tight uppercase">Techpaathshala</span></div>
+                <div class="slide"><span class="italic uppercase">Molten</span></div>
+                <div class="slide"><span class="uppercase tracking-[0.2em]">Fashion Dekho</span></div>
+                <div class="slide"><span class="uppercase">Maestro Music Institute</span></div>
+                <div class="slide"><span class="uppercase">IndusQA</span></div>
+            </div>
+        </div>
+    </div>
+</div>
